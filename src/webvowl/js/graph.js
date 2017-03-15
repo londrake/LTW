@@ -4,7 +4,9 @@ var linkCreator = require("./parsing/linkCreator")();
 var elementTools = require("./util/elementTools")();
 
 
+
 module.exports = function (graphContainerSelector) {
+    //require("../css/mycss.css");
 	var graph = {},
 		CARDINALITY_HDISTANCE = 20,
 		CARDINALITY_VDISTANCE = 10,
@@ -795,18 +797,179 @@ module.exports = function (graphContainerSelector) {
 				module.handle(selectedElement);
 			});
 		}
+        
 
 		nodeElements.on("click", function (clickedNode) {
             console.log("Clicked node: " + clickedNode);
 			executeModules(clickedNode);
 		});
         
+        
+        function myscript(){
+
+            var menuNormColor="lightgrey";      //NORMAL COLOR OF THE MENU ITEMS
+            var menuHoverColor="#0084d8";       //COLOR OF THE MENU ITEMS ONMOUSEOVER
+            var enableShadow=true;              //SET TO "true" TO ENABLE SHADOW, "false" TO DISABLE IT.
+            var enableShadowTransparency=true;  //SET TO "true" TO ENABLE SHADOW SEMI-TRANSPARENCY (ie4+, ns6+ ONLY), "false" TO DISABLE IT.
+            var disableNS4=false;               // BECAUSE THE MENU DOESNT LOOK RIGHT WHEN THE PAGE CONTAINS FORMS IN NS4, SET THIS VALUE TO
+                                                // "true" TO DISABLE THIS CONTEXT MENU AND USE THE DEFAULT ONE. THIS EFFECTS NS4.X ONLY.
+
+            // THE ARRAY BELOW CONTAINS THE MENU ITEMS. FORMAT:
+            // [ 'LINK TEXT TO APPEAR IN MENU' , 'LINK HREF' , 'TARGET WINDOW/FRAME' ];
+            // JUST ADD ARRAY ITEMS AS NEEDED KEEPING NUMBER SEQUENCE
+            // TO ADD REGULAR (NON-LINK) HTML/TEXT, USE THE FOLLOWING FORMAT:
+            // [ 'REGULAR TEXT/HTML HERE' ];
+
+            var menu=new Array();
+            menu[0]=['<center>- JavaScript -</center>'];
+            menu[1]=['JavaScript Alert Box' , 'javascript:alert(\'This is a JavaScript alert box...\')' , ''];
+            menu[2]=['Email me...' , 'mailto:scriptasylum@hotmail.com' , ''];
+            menu[3]=['Print...' , 'javascript:window.print();' , ''];
+            menu[4]=['Refresh this page.' , 'javascript:history.go(0)', ''];
+            menu[5]=['View Page Source...' , 'view-source:'+location.href, ''];
+            menu[6]=['<center>- Links -</center>'];
+            menu[7]=['Script Asylum' , 'http://scriptasylum.com' , '_blank'];
+            menu[8]=['Dynamic Drive' , 'http://dynamicdrive.com' , '_blank'];
+            menu[9]=['Javascript Source' , 'http://javascriptsource.com' , '_blank'];
+            menu[10]=['Right-click the mouse again to dismiss...'];
+
+            //****************** NO NEED TO EDIT BEYOND HERE ********************
+
+            ns4 = (navigator.appName.indexOf("Netscape")>=0 && document.layers)? true : false;
+            ie4 = (document.all && !document.getElementById)? true : false;
+            ie5 = (document.all && document.getElementById)? true : false;
+            ns6 = (document.getElementById && navigator.appName.indexOf("Netscape")>=0 )? true: false;
+            w3c = (document.getElementById)? true : false;
+            var mx=0;
+            var my=0;
+            var conmenu;
+            var conshadow;
+            var windowloaded=false;
+            var opened=false;
+            var ch=0;
+            var cw=0;
+
+            function setc(ref,c){
+            if(ns4)ref.bgColor=c;
+            else ref.style.backgroundColor=c;
+            }
+
+            var txt='<div  id="conshadow"> </div>';
+            txt+='<div id="conmenu">';
+            for(i=0;i<menu.length;i++){
+            if(menu[i].length<3){
+            txt+='<ilayer><div class="normtext">'+menu[i][0]+'</div></ilayer>';
+            }else{
+            txt+=(ns4)?'<ilayer width="100%" bgcolor="'+menuNormColor+'"><layer width="100%" onmouseover="setc(this,\''+menuHoverColor+'\')" onmouseout="setc(this,\''+menuNormColor+'\')">':'<div class="link" style="background-color:'+menuNormColor+'" onmouseover="setc(this,\''+menuHoverColor+'\')" onmouseout="setc(this,\''+menuNormColor+'\')">';
+            txt+='<a href="'+menu[i][1]+'" target="'+menu[i][2]+'" class="link">'+menu[i][0]+'</a>';
+            txt+=(ns4)?'</layer></ilayer>':'</div>';
+            }}
+            txt+='</div>';
+            document.write(txt);
+
+            function ns4trap(evt){
+            if(evt.which==2||evt.which==3){
+            showmenu();
+            return false;
+            }}
+
+            function showmenu(){
+            if(windowloaded){
+            if(opened){
+            if(ns4){
+            conmenu.visibility="hide";
+            conshadow.visibility="hide";
+            conmenu.moveTo(0,0);
+            conshadow.moveTo(0,0);
+            }else{
+            conmenu.style.visibility="hidden";
+            conshadow.style.visibility="hidden";
+            conmenu.style.left='0px';
+            conmenu.style.top='0px';
+            conshadow.style.left='0px';
+            conshadow.style.top='0px';
+            }
+            opened=false;
+            }else{
+            opened=true;
+            var wh=(ie4||ie5)?document.body.clientHeight:window.innerHeight;
+            var ww=(ie4||ie5)?document.body.clientWidth:window.innerWidth;
+            var sx=(ie4||ie5)?document.body.scrollLeft:pageXOffset;
+            var sy=(ie4||ie5)?document.body.scrollTop:pageYOffset;
+            if(ie4||ie5){
+            if(mx+cw+13>=ww)mx=mx-cw-13;
+            if(my+ch+13>=wh)my=my-ch-13;
+            }else{
+            if(mx+cw-sx+13>=ww)mx=mx-cw-13;
+            if(my+ch-sy+13>=wh)my=my-ch-13;
+            }
+            if(ns4){
+            conmenu.moveTo(mx,my);
+            conmenu.visibility="show";
+            conshadow.moveTo(mx+8,my+8);
+            if(enableShadow)conshadow.visibility="show";
+            }else{
+            conmenu.style.left=mx+((ie4||ie5)?sx:0)+'px';
+            conmenu.style.top=my+((ie4||ie5)?sy:0)+'px';
+            conshadow.style.left=mx+10+((ie4||ie5)?sx:0)+'px';
+            conshadow.style.top=my+10+((ie4||ie5)?sy:0)+'px';
+            setTimeout('conmenu.style.visibility="visible"; if(enableShadow)conshadow.style.visibility="visible"; ',50);
+            }}}}
+
+            if(ns4&&!disableNS4){
+            document.captureEvents(Event.MOUSEDOWN|Event.MOUSEMOVE);
+            document.onmousedown=ns4trap;
+            }else{
+            document.oncontextmenu=function(){
+            showmenu();
+            return false;
+            }}
+
+            document.onmousemove=function(evt){
+            mx=(ie4||ie5)?event.clientX:evt.pageX;
+            my=(ie4||ie5)?event.clientY:evt.pageY;
+            }
+
+            window.onload=function(){
+              windowloaded=true;
+              conmenu=(ns4)?document.layers['conmenu']:(ie4)?document.all['conmenu']:document.getElementById('conmenu');
+              conshadow=(ns4)?document.layers['conshadow']:(ie4)?document.all['conshadow']:document.getElementById('conshadow');
+              ch=(ns4)?conmenu.document.height:(ie4||ie5)?conmenu.clientHeight:conmenu.offsetHeight;
+              cw=(ns4)?conmenu.document.width:(ie4||ie5)?conmenu.clientWidth:conmenu.offsetWidth;
+              if(ns4){
+              conshadow.clip.height=conmenu.document.height;
+              conshadow.clip.width=conmenu.document.width;
+              conmenu.clip.bottom=conmenu.document.height;
+              }else{
+              if(enableShadowTransparency){
+              if(ie4||ie5)conshadow.style.filter="alpha(opacity=50)";
+              if(ns6||!ie4||!ie5)conshadow.style.MozOpacity=.5;
+              }
+              conshadow.style.height=ch+((ie4||ie5)?4:0);
+              conshadow.style.width=cw+((ie4||ie5)?4:0);
+              }
+            //ADD OTHER WINDOW ONLOAD EVENT HANDLER SCRIPTS/COMMANDS HERE
+            }
+
+            window.onresize=function(){
+            if(ns4)setTimeout('history.go(0)',200);
+            //ADD OTHER WINDOW RESIZE HANDLER COMMANDS/SCRIPTS HERE
+}
+
+
+        }
+        
+        
+        
+        
         nodeElements.on("contextmenu", function(clickedNode){ 
             console.log("R_CLICK");
             console.log(clickedNode);
             console.log(clickedNode.id());
             console.log(clickedNode.comment("Nuovo commento"));
-            graph.start(); // funzione che re-parsa il file JSON e disegna il grafo. da richiamare dopo edit(scrittura file nuovo)
+            //graph.start(); // funzione che re-parsa il file JSON e disegna il grafo. da richiamare dopo edit(scrittura file nuovo)
+            
+            myscript();
             return false;
             
             },false);

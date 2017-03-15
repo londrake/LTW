@@ -1,0 +1,99 @@
+{
+  "_comment" : "Created with OWL2VOWL (version 0.3.1), http://vowl.visualdataweb.org",
+  "header" : {
+    "baseIris" : [ "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4", "http://www.w3.org/2000/01/rdf-schema" ],
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4"
+  },
+  "namespace" : [ ],
+  "metrics" : {
+    "classCount" : 4,
+    "objectPropertyCount" : 0,
+    "datatypePropertyCount" : 0,
+    "individualCount" : 0
+  },
+  "class" : [ {
+    "id" : "0",
+    "type" : "owl:Class"
+  }, {
+    "id" : "1",
+    "type" : "owl:Class"
+  }, {
+    "id" : "2",
+    "type" : "owl:Class"
+  }, {
+    "id" : "3",
+    "type" : "owl:Class"
+  } ],
+  "classAttribute" : [ {
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Padre",
+    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
+    "instances" : 0,
+    "label" : {
+      "IRI-based" : "Padruyuue"
+    },
+    "subClasses" : [ "2", "3" ],
+    "id" : "0",
+    "superClasses" : [ "1" ]
+  }, {
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Nonno",
+    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
+    "instances" : 0,
+    "label" : {
+      "IRI-based" : "Nonno"
+    },
+    "subClasses" : [ "0" ],
+    "id" : "1"
+  }, {
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Figlio_1",
+    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
+    "instances" : 0,
+    "label" : {
+      "IRI-based" : "Figlio_1"
+    },
+    "id" : "2",
+    "superClasses" : [ "0" ]
+  }, {
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Figlio_2",
+    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
+    "instances" : 0,
+    "label" : {
+      "IRI-based" : "Figlio_2"
+    },
+    "id" : "3",
+    "superClasses" : [ "0" ]
+  } ],
+  "property" : [ {
+    "id" : "4",
+    "type" : "owl:disjointWith"
+  }, {
+    "id" : "5",
+    "type" : "rdfs:SubClassOf"
+  }, {
+    "id" : "6",
+    "type" : "rdfs:SubClassOf"
+  }, {
+    "id" : "7",
+    "type" : "rdfs:SubClassOf"
+  } ],
+  "propertyAttribute" : [ {
+    "range" : "3",
+    "domain" : "2",
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "4"
+  }, {
+    "range" : "0",
+    "domain" : "2",
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "5"
+  }, {
+    "range" : "0",
+    "domain" : "3",
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "6"
+  }, {
+    "range" : "1",
+    "domain" : "0",
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "7"
+  } ]
+}

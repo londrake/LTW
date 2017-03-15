@@ -15,7 +15,8 @@ module.exports = function (graph) {
 		emptyGraph=false,
 		fileToLoad,
 		cachedConversions = {},
-		loadOntologyFromText;
+		loadOntologyFromText,
+        file_path;// contiene il file path dell'ontologia(IRI, JSON)
 
 
 	String.prototype.beginsWith = function (string) {
@@ -36,7 +37,7 @@ module.exports = function (graph) {
 
 		var descriptionButton = d3.select("#error-description-button").datum({open: false});
 		descriptionButton.on("click", function (data) {
-            console.log("cazzo di cane");
+            
 			var errorContainer = d3.select("#error-description-container");
 			var errorDetailsButton = d3.select(this);
 
@@ -111,21 +112,27 @@ module.exports = function (graph) {
 
 		if (hashParameter.substr(0, fileKey.length) === fileKey) {
 			var filename = decodeURIComponent(hashParameter.slice(fileKey.length));
+            console.log("Il file si trova: ");            
+            file_path=filename;
+            console.log(file_path);
 			loadOntologyFromFile(filename);
 
 		} else if (hashParameter.substr(0, urlKey.length) === urlKey) {
-			var url = decodeURIComponent(hashParameter.slice(urlKey.length));
-			loadOntologyFromURL("read?json=" + encodeURIComponent(url), url);
+			var url = decodeURIComponent(hashParameter.slice(urlKey.length));            
+            loadOntologyFromURL("read?json=" + encodeURIComponent(url), url);
 
 		} else if (hashParameter.substr(0, iriKey.length) === iriKey) {
 			var iri = decodeURIComponent(hashParameter.slice(iriKey.length));
+            
 			loadOntologyFromUri("convert?iri=" + encodeURIComponent(iri), iri);
 			d3.select("#converter-option").classed("selected-ontology", true);
 
 		} else {
 			// id of an existing ontology as parameter
 			loadOntologyFromUri("data/" + hashParameter + ".json", hashParameter);
-
+            console.log("Il file si trova: ");            
+            file_path="data/" + hashParameter + ".json";
+            console.log(file_path);
 			ontologyOptions.each(function () {
 				var ontologyOption = d3.select(this);
 				if (ontologyOption.select("a").size() > 0) {
@@ -194,6 +201,10 @@ module.exports = function (graph) {
 	}
 
 	function loadOntologyFromUri(relativePath, requestedUri) {
+        file_path=relativePath;
+        console.log("Il file si trova: ");
+        console.log(relativePath);
+        console.log(requestedUri);
 		fileToLoad=requestedUri;
 		var cachedOntology = cachedConversions[relativePath];
 		var trimmedRequestedUri = requestedUri.replace(/\/$/g, "");
@@ -375,6 +386,7 @@ module.exports = function (graph) {
 	}
 
 	function loadOntologyFromFile(filename) {
+
 		var cachedOntology = cachedConversions[filename];
 		if (cachedOntology) {
 			displayLoadingIndicators();
@@ -396,6 +408,7 @@ module.exports = function (graph) {
 			return;
 		} else {
 			filename = selectedFile.name;
+
 		}
 
 		if (filename.match(/\.json$/)) {
