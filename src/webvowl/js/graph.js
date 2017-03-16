@@ -20,6 +20,7 @@ module.exports = function (graphContainerSelector) {
 			.interpolate("cardinal"),
 		options = require("./options")(),
 		parser = require("./parser")(graph),
+        page=require("./page")(),
 		language = "default",
 		paused = false,
 	// Container for visual elements
@@ -806,12 +807,21 @@ module.exports = function (graphContainerSelector) {
         
         //Script menu contestuale tasto destro
         function myscript(clickedNode){
+            var stile = "top=10, left=10, width=250, height=200, status=no, menubar=no, toolbar=no scrollbars=no";
+
             var menu = [{
         name: 'create',
        // img: 'images/create.png',
         title: 'create button',
         fun: function () {
-            alert('i am add button')
+            
+           var oDom= window.open('../pop.html', "", stile);
+            oDom.onload = function() {
+                page.htmlCreator(oDom);
+            };
+
+            
+            
         }
     }, {
         name: 'update',
