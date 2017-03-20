@@ -17,8 +17,8 @@ module.exports = function (graph) {
 		settingsData,
 		settingsImported = false,
 		dictionary=[],
-		propertyMap,
-        mio=require("./mio")();
+		propertyMap;
+        
 
 	parser.getDictionary=function(){
 		return dictionary;
@@ -138,13 +138,6 @@ module.exports = function (graph) {
 			unparsedProperties = ontologyData.property || [],
         	combinedProperties;
         
-        mio.set_classi(ontologyData.class, parser);
-        console.log("*******************************\n");
-        
-        console.log(ontologyData.class);
-        console.log(classes);
-        console.log(datatypes);
-        console.log("*******************************\n");
 
 		// Inject properties for unions, intersections, ...
 		addSetOperatorProperties(combinedClassesAndDatatypes, unparsedProperties);

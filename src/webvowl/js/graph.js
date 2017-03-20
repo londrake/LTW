@@ -5,6 +5,7 @@ var elementTools = require("./util/elementTools")();
 
 
 
+
 module.exports = function (graphContainerSelector) {
     //require("../css/mycss.css");
 	var graph = {},
@@ -51,7 +52,8 @@ module.exports = function (graphContainerSelector) {
 		nodeArrayForPulse = [],
 		nodeMap = [],
         locationId = 0,
-		zoom;
+		zoom,
+        _clickedNode=null;
 
 	/**
 	 * Recalculates the positions of nodes, links, ... and updates them.
@@ -802,33 +804,39 @@ module.exports = function (graphContainerSelector) {
 
 		nodeElements.on("click", function (clickedNode) {
             console.log("Clicked node: " + clickedNode);
+            console.log( clickedNode.label()[0]);
+            console.log(clickedNode.labelForCurrentLanguage());
+            console.log(clickedNode.id());
+            console.log(clickedNode.iri());
 			executeModules(clickedNode);
 		});
         
         //Script menu contestuale tasto destro
-        function myscript(clickedNode){
+        function myscript(){
             var stile = "top=10, left=10, width=250, height=200, status=no, menubar=no, toolbar=no scrollbars=no";
-
+           
             var menu = [{
         name: 'create',
        // img: 'images/create.png',
         title: 'create button',
-        fun: function () {
-            
+        fun: function () {            
            var oDom= window.open('../pop.html', "", stile);
-            oDom.onload = function() {
-                page.htmlCreator(oDom);
-            };
-
-            
-            
+                oDom.onload = function() {
+                page.initialize(graph);
+                
+                page.htmlCreator(oDom,true,_clickedNode);
+            };           
         }
     }, {
         name: 'update',
        // img: 'images/update.png',
         title: 'update button',
         fun: function () {
-            alert('i am update button')
+            var oDom= window.open('../pop.html', "", stile);
+                oDom.onload = function() {
+                page.initialize(graph);
+                page.htmlCreator(oDom,false,_clickedNode);
+            };
         }
     }, {
         name: 'delete',
@@ -840,8 +848,8 @@ module.exports = function (graphContainerSelector) {
     }];
  
 //Calling context menu
- $('#'+clickedNode.id()).contextMenu(menu);
- $('#'+clickedNode.id()).contextMenu("open",{top:(Mouse.y),left:(Mouse.x)});
+ $('#'+_clickedNode.id()).contextMenu(menu);
+ $('#'+_clickedNode.id()).contextMenu("open",{top:(Mouse.y),left:(Mouse.x)});
             
             
             
@@ -851,16 +859,14 @@ module.exports = function (graphContainerSelector) {
         
         
         nodeElements.on("contextmenu", function(clickedNode){ 
-            console.log("R_CLICK");
-            console.log(clickedNode);
-            console.log(clickedNode.id());
-            console.log(clickedNode.comment("Nuovo commento"));
             //graph.start(); // funzione che re-parsa il file JSON e disegna il grafo. da richiamare dopo edit(scrittura file nuovo)
-            
-            myscript(clickedNode);
+            _clickedNode=clickedNode;
+            mynode=clickedNode;
+            myscript();
             executeModules(clickedNode);
-            return false;
             
+            
+            return false;           
             },false);
         
         
