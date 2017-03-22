@@ -94,6 +94,7 @@ module.exports = function () {
 			var validJSON;
 			try {
 				data =JSON.parse(jsonText);
+                parsed=data;//ADD 
 				validJSON=true;
 			} catch (e){
 				validJSON=false;

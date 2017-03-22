@@ -1075,7 +1075,9 @@ module.exports = function (graphContainerSelector) {
 	};
 
 	graph.language = function (newLanguage) {
-		if (!arguments.length) return language;
+		if (!arguments.length)
+        {   
+            return language;}
 
 		// Just update if the language changes
 		if (language !== newLanguage) {
@@ -1084,6 +1086,7 @@ module.exports = function (graphContainerSelector) {
 			recalculatePositions();
 			graph.options().searchMenu().requestDictionaryUpdate();
 			graph.resetSearchHighlight();
+            
 		}
 		return graph;
 	};

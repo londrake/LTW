@@ -119,7 +119,7 @@ module.exports = function (graph) {
 		if (hashParameter.substr(0, fileKey.length) === fileKey) {
 			var filename = decodeURIComponent(hashParameter.slice(fileKey.length));
             console.log("Il file si trova: ");            
-            global.file_path=filename;//ADD
+            file_path=filename;//ADD
             loadOntologyFromFile(filename);
 
 			
@@ -138,7 +138,7 @@ module.exports = function (graph) {
 			// id of an existing ontology as parameter
 			loadOntologyFromUri("data/" + hashParameter + ".json", hashParameter);
             console.log("Il file si trova: ");            
-            global.file_path="data/" + hashParameter + ".json";//ADD
+            file_path="data/" + hashParameter + ".json";//ADD
 
 			ontologyOptions.each(function () {
 				var ontologyOption = d3.select(this);

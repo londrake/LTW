@@ -10,14 +10,18 @@ module.exports = function () {
 
 
 page.initialize=function(g){
-    this.grafo=g;
-    //this.myparser.start();   
+    grafo=g;
+    
 }
 
 
 page.htmlCreator=function(oDom, insert,nodo){
     
+    //console.log("lingua selezionata: "+ grafo.language());
+    myparser.set_language(grafo.language());
     myparser.start();
+    var data= myparser.read(nodo.id());
+    
     
     //insert= true : inserimento, altriment è edit
     var mainDiv = oDom.document.getElementById("maindiv");
@@ -86,26 +90,25 @@ page.htmlCreator=function(oDom, insert,nodo){
         
     }else{
         //modifica
-        console.log(nodo);
+        
+        
         input=oDom.document.getElementById("name");
-        input.value=nodo.label()["IRI-based"];
+        input.value=data.name;
         input=oDom.document.getElementById("type");
-        input.value=nodo.type();
+        input.value=data.type;
         input=oDom.document.getElementById("comment");
-        input.value=nodo.commentForCurrentLanguage();
-        input=oDom.document.getElementById("disjoint");
-        
-        var temp= nodo.disjoinWith();
-        for(var i=0; i<temp.length();i++){
-            input.value+=temp[i].label()["IRI-based"]+", ";        
+        input.value=data.comment;
+        input=oDom.document.getElementById("disjoint");  
+        for(var i in data.disjoinWith){
+            input.value+=i.name+", ";        
+        }        
+        input=oDom.document.getElementById("subclassof");               
+        for(var i in data.subClassOf){
+            input.value+=i.name+", ";        
         }
-        
-        input=oDom.document.getElementById("subclassof");
-        input.value="Prendere da ontologia";
-        input=oDom.document.getElementById("equivalent");
-        temp=nodo.equivalents();
-        for(var i=0; i<temp.length();i++){
-            input.value+=node[i].label()["IRI-based"]+", ";        
+        input=oDom.document.getElementById("equivalent");       
+        for(var i in data.equivalent){
+            input.value+=i.name+", ";        
         }        
         
                 
