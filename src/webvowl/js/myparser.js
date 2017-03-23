@@ -20,12 +20,23 @@ myparser.start= function(){
     
 
     
-    myparser.find=function(id){
+    myparser.findClassIndex=function(id){
         
         var objindex=0;
         for(var i=0; i< parsed.class.length; i++){
             
             if (parsed.class[i].id==id)
+                objindex=i;            
+            
+        }
+        return objindex; 
+}
+        myparser.findPropertyIndex=function(id){
+        
+        var objindex=0;
+        for(var i=0; i< parsed.property.length; i++){
+            
+            if (parsed.property[i].id==id)
                 objindex=i;            
             
         }
@@ -51,50 +62,87 @@ myparser.start= function(){
     myparser.read=function(id){
         
         
-        var index= myparser.find(id);
-        var data= { name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[]};
-        var element={name:"", internalindex:"", id:"" };
+        var index= myparser.findClassIndex(id);
+        var data= { name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClass:[]};
+        //var element={name:"", internalindex:"", id:"", equivalentTo: ""};
         data.name= parsed.classAttribute[index].label[language];
-        data.type= parsed.class[index].type;
-        data.comment=parsed.classAttribute[index].comment[language];// gestire se il campo non è presente UNDEFINED
-        
+        if (typeof data.name=='undefined')
+            data.name= parsed.classAttribute[index].label["IRI-based"];
+        data.type= parsed.class[index].type;  
+        if (typeof parsed.classAttribute[index].comment != 'undefined'){
+            data.comment=parsed.classAttribute[index].comment[language];
+            if(typeof data.comment=='undefined')
+                data.comment="";
+        }
+        //disjoint
         for(var i=0; i<parsed.propertyAttribute.length;i++)
             {
-                //var count=0;
-                if (parsed.propertyAttribute[i].range==id && parsed.property[i].type=="owl:disjointWith"){
-                    
-                    element.id= parsed.propertyAttribute[i].domain;
+
+                if (parsed.propertyAttribute[i].domain==id && parsed.property[i].type=="owl:disjointWith"){
+                    var element={name:"", internalindex:"", id:"", equivalentTo: ""};
+                    element.id= parsed.propertyAttribute[i].range;
                     element.internalindex= i;
-                    element.name= parsed.classAttribute[myparser.find(element.id)].label[language];
+                    element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
+                    if (typeof element.name=='undefined')
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];                    
                     data.disjoinWith.push(element);
                    
                     
                 }
             }
-        for(var i=0; i<parsed.propertyAttribute.length;i++)
+        //superclass
+        if (typeof parsed.classAttribute[myparser.findClassIndex(id)].superClasses != 'undefined')
             {
-                //var count=0;
-                if (parsed.propertyAttribute[i].range==id && parsed.property[i].type=="rdfs:SubClassOf"){
-                    
-                    element.id= parsed.propertyAttribute[i].domain;
-                    element.internalindex= i;
-                    element.name= parsed.classAttribute[myparser.find(element.id)].label[language];
-                    data.subClassOf.push(element);
+                
+                
+                for(var i=0; i<parsed.classAttribute[myparser.findClassIndex(id)].superClasses.length;i++)
+                {   var element={name:"", internalindex:"", id:"", equivalentTo: ""};                 
+                    element.id= parsed.classAttribute[myparser.findClassIndex(id)].superClasses[i];                    
+                    element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
+                    if (typeof element.name=='undefined')
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                    data.superClasses.push(element);                   
+                
+                }                
+                
+                
+                
+            }
+        //subclass
+        if (typeof parsed.classAttribute[myparser.findClassIndex(id)].subClasses != 'undefined')
+            {
+                
+                
+                for(var i=0; i<parsed.classAttribute[myparser.findClassIndex(id)].subClasses.length;i++)
+                {   var element={name:"", internalindex:"", id:"", equivalentTo: ""};                 
+                    element.id= parsed.classAttribute[myparser.findClassIndex(id)].subClasses[i];                    
+                    element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
+                    if (typeof element.name=='undefined')
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                    data.subClassOf.push(element);                   
+                
+                }                
+                
+                
+                
+            }
+        
+        
+        
+        //equivalent --- tratta come un oggetto;
+         if (typeof parsed.classAttribute[myparser.findClassIndex(id)].equivalent != 'undefined'){
+             var equivalents= parsed.classAttribute[myparser.findClassIndex(id)].equivalent;
+             var ind=myparser.findClassIndex(id);
+            for(var i=0; i<equivalents.length;i++)
+                {       var element={name:"", internalindex:"", id:"", equivalentTo: ""};//oggetto equivalent
+                        element.id= equivalents[i].id();
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
+                        if (typeof element.name=='undefined')
+                            element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                        data.equivalent.push(element);
+
                     
                 }
-            }
-        for(var i=0; i<parsed.propertyAttribute.length;i++)
-            {
-                //var count=0;
-                if (parsed.propertyAttribute[i].range==id && parsed.property[i].type=="owl:equivalentClass"){
-                    
-                    element.id= parsed.propertyAttribute[i].domain;
-                    element.internalindex= i;
-                    element.name= parsed.classAttribute[myparser.find(element.id)].label[language];
-                    data.equivalent.push(element);
-                    
-                } 
-                
             }
                 
     return data;  

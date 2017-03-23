@@ -19,14 +19,21 @@
         <Class IRI="#Figlio_2"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Ricchione"/>
+        <Class IRI="#Figlio_1"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Figlio_1"/>
+        <Class IRI="#Ricchione"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Padre"/>
     </Declaration>
+    <Declaration>
+        <Class IRI="#gigolo"/>
+    </Declaration>
+    <EquivalentClasses>
+        <Class IRI="#Figlio_1"/>
+        <Class IRI="#gigolo"/>
+    </EquivalentClasses>
     <EquivalentClasses>
         <Class IRI="#Figlio_2"/>
         <Class IRI="#Ricchione"/>
@@ -47,10 +54,19 @@
         <Class IRI="#Ricchione"/>
         <Class IRI="#Padre"/>
     </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#gigolo"/>
+        <Class IRI="#Padre"/>
+    </SubClassOf>
     <DisjointClasses>
         <Class IRI="#Figlio_1"/>
         <Class IRI="#Figlio_2"/>
     </DisjointClasses>
+    <AnnotationAssertion>
+        <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
+        <IRI>#Figlio_1</IRI>
+        <Literal datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">il trombatore di vecchie</Literal>
+    </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#Figlio_2</IRI>

@@ -69,10 +69,19 @@ page.htmlCreator=function(oDom, insert,nodo){
     span.setAttribute("class", "text");
     span.innerHTML="SubClassOf";
     input =oDom.document.createElement("input");
-    input.setAttribute("id","subclassof");
+    input.setAttribute("id","superclass");
     span.appendChild(input);
     div.appendChild(span);
     mainDiv.appendChild(div);
+    div =oDom.document.createElement("div");
+    span =oDom.document.createElement("span");
+    span.setAttribute("class", "text");
+    span.innerHTML="SubClasses";
+    input =oDom.document.createElement("input");
+    input.setAttribute("id","subclass");
+    span.appendChild(input);
+    div.appendChild(span);
+    mainDiv.appendChild(div);    
     div =oDom.document.createElement("div");
     span =oDom.document.createElement("span");
     span.setAttribute("class", "text");
@@ -98,17 +107,22 @@ page.htmlCreator=function(oDom, insert,nodo){
         input.value=data.type;
         input=oDom.document.getElementById("comment");
         input.value=data.comment;
-        input=oDom.document.getElementById("disjoint");  
-        for(var i in data.disjoinWith){
-            input.value+=i.name+", ";        
+        input=oDom.document.getElementById("disjoint"); 
+        input=oDom.document.getElementById("superclass");               
+                
+        for(var i=0; i< data.superClass.length;i++){
+            input.value+=data.superClass[i].name+", ";        
+        }
+        for(var i=0; i< data.disjoinWith.length;i++){
+            input.value+=data.disjoinWith[i].name+", ";        
         }        
-        input=oDom.document.getElementById("subclassof");               
-        for(var i in data.subClassOf){
-            input.value+=i.name+", ";        
+        input=oDom.document.getElementById("subclass");               
+        for(var i=0; i< data.subClassOf.length;i++){
+            input.value+=data.subClassOf[i].name+", ";        
         }
         input=oDom.document.getElementById("equivalent");       
-        for(var i in data.equivalent){
-            input.value+=i.name+", ";        
+        for(var i=0; i< data.equivalent.length;i++){
+            input.value+=data.equivalent[i].name+", ";        
         }        
         
                 
