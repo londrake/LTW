@@ -89,6 +89,17 @@ myparser.start= function(){
                    
                     
                 }
+                if (parsed.propertyAttribute[i].range==id && parsed.property[i].type=="owl:disjointWith"){
+                    var element={name:"", internalindex:"", id:"", equivalentTo: ""};
+                    element.id= parsed.propertyAttribute[i].domain;
+                    element.internalindex= i;
+                    element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
+                    if (typeof element.name=='undefined')
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];                    
+                    data.disjoinWith.push(element);
+                   
+                    
+                }
             }
         //superclass
         if (typeof parsed.classAttribute[myparser.findClassIndex(id)].superClasses != 'undefined')
