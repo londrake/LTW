@@ -106,13 +106,13 @@ page.htmlCreator=function(oDom, insert,nodo){
         input=oDom.document.getElementById("type");
         input.value=data.type;
         input=oDom.document.getElementById("comment");
-        input.value=data.comment;
-        input=oDom.document.getElementById("disjoint"); 
+        input.value=data.comment;         
         input=oDom.document.getElementById("superclass");               
                 
-        for(var i=0; i< data.superClass.length;i++){
-            input.value+=data.superClass[i].name+", ";        
+        for(var i=0; i< data.superClasses.length;i++){
+            input.value+=data.superClasses[i].name+", ";        
         }
+        input=oDom.document.getElementById("disjoint");
         for(var i=0; i< data.disjoinWith.length;i++){
             input.value+=data.disjoinWith[i].name+", ";        
         }        
