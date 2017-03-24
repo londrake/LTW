@@ -31,7 +31,7 @@ myparser.start= function(){
         }
         return objindex; 
 }
-     myparser.findPropertyIndex=function(id){
+        myparser.findPropertyIndex=function(id){
         
         var objindex=0;
         for(var i=0; i< parsed.property.length; i++){
@@ -63,21 +63,14 @@ myparser.start= function(){
         
         
         var index= myparser.findClassIndex(id);
-        var data= { name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClass:[]};
+        var data= { name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClasses:[]};
         //var element={name:"", internalindex:"", id:"", equivalentTo: ""};
         data.name= parsed.classAttribute[index].label[language];
         if (typeof data.name=='undefined')
-<<<<<<< HEAD
-            data.name= parsed.classAttribute[myparser.findClassIndex(id)].label["IRI-based"];
-    }
-    myparser.findComment=function(id){
-        data.comment=parsed.classAttribute[myparser.findClassIndex(id)].comment[language];
-=======
             data.name= parsed.classAttribute[index].label["IRI-based"];
         data.type= parsed.class[index].type;  
         if (typeof parsed.classAttribute[index].comment != 'undefined'){
             data.comment=parsed.classAttribute[index].comment[language];
->>>>>>> parent of 6b3cb69... my parser modularization
             if(typeof data.comment=='undefined')
                 data.comment="";
         }
@@ -91,25 +84,14 @@ myparser.start= function(){
                     element.internalindex= i;
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
-<<<<<<< HEAD
-                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
-                    element.equivalentTo=myparser.findEquivalentClasses(element.id);
-=======
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];                    
->>>>>>> parent of 6b3cb69... my parser modularization
                     data.disjoinWith.push(element);
                    
                     
                 }
             }
-<<<<<<< HEAD
-    }
-    myparser.findSubclasses=function(id){
-        if (typeof parsed.classAttribute[myparser.findClassIndex(id)].subClasses != 'undefined')
-=======
         //superclass
         if (typeof parsed.classAttribute[myparser.findClassIndex(id)].superClasses != 'undefined')
->>>>>>> parent of 6b3cb69... my parser modularization
             {
                 
                 
@@ -119,12 +101,7 @@ myparser.start= function(){
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
-<<<<<<< HEAD
-                 element.equivalentTo=myparser.findEquivalentClasses(element.id);   
-                 data.subClassOf.push(element);                   
-=======
                     data.superClasses.push(element);                   
->>>>>>> parent of 6b3cb69... my parser modularization
                 
                 }                
                 
@@ -142,12 +119,7 @@ myparser.start= function(){
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
-<<<<<<< HEAD
-                 element.equivalentTo=myparser.findEquivalentClasses(element.id);   
-                 data.superClasses.push(element);                   
-=======
                     data.subClassOf.push(element);                   
->>>>>>> parent of 6b3cb69... my parser modularization
                 
                 }                
                 
@@ -161,17 +133,9 @@ myparser.start= function(){
          if (typeof parsed.classAttribute[myparser.findClassIndex(id)].equivalent != 'undefined'){
              var equivalents= parsed.classAttribute[myparser.findClassIndex(id)].equivalent;
              var ind=myparser.findClassIndex(id);
-<<<<<<< HEAD
-             var element={name:"", internalindex:"", id:"", equivalentTo: ""};//oggetto equivalent
-             for(var i=0; i<equivalents.length;i++)
-                {       
-                        
-                        element.id= equivalents[""+i].id();
-=======
             for(var i=0; i<equivalents.length;i++)
                 {       var element={name:"", internalindex:"", id:"", equivalentTo: ""};//oggetto equivalent
                         element.id= equivalents[i].id();
->>>>>>> parent of 6b3cb69... my parser modularization
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                         if (typeof element.name=='undefined')
                             element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
@@ -183,13 +147,11 @@ myparser.start= function(){
                 
     return data;  
     }
-    
 
 
 
 
 return myparser;
 }
-
     
        // console.log(node.id);
