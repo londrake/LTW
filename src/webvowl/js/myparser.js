@@ -63,7 +63,7 @@ myparser.start= function(){
         
         
         var index= myparser.findClassIndex(id);
-        var data= { name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClasses:[]};
+        var data= { name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClass:[]};
         //var element={name:"", internalindex:"", id:"", equivalentTo: ""};
         data.name= parsed.classAttribute[index].label[language];
         if (typeof data.name=='undefined')
