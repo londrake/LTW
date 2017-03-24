@@ -32,7 +32,7 @@ myparser.start= function(){
         }
         return objindex; 
 }
-        myparser.findPropertyIndex=function(id){
+     myparser.findPropertyIndex=function(id){
         
         var objindex=0;
         for(var i=0; i< parsed.property.length; i++){
@@ -65,7 +65,7 @@ myparser.start= function(){
             data.name= parsed.classAttribute[myparser.findClassIndex(id)].label["IRI-based"];
     }
     myparser.findComment=function(id){
-        data.comment=parsed.classAttribute[index].comment[language];
+        data.comment=parsed.classAttribute[myparser.findClassIndex(id)].comment[language];
             if(typeof data.comment=='undefined')
                 data.comment="";
     }
@@ -83,11 +83,12 @@ myparser.start= function(){
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
-                    element.equivalentTo=myparser.findEquivalentClasses(id);
+                    element.equivalentTo=myparser.findEquivalentClasses(element.id);
                     data.disjoinWith.push(element);
                    
                     
                 }
+            }
     }
     myparser.findSubclasses=function(id){
         if (typeof parsed.classAttribute[myparser.findClassIndex(id)].subClasses != 'undefined')
@@ -100,7 +101,7 @@ myparser.start= function(){
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
-                 element.equivalentTo=myparser.findEquivalentClasses(id);   
+                 element.equivalentTo=myparser.findEquivalentClasses(element.id);   
                  data.subClassOf.push(element);                   
                 
                 }                
@@ -120,7 +121,7 @@ myparser.start= function(){
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
-                 element.equivalentTo=myparser.findEquivalentClasses(id);   
+                 element.equivalentTo=myparser.findEquivalentClasses(element.id);   
                  data.superClasses.push(element);                   
                 
                 }                
@@ -135,7 +136,8 @@ myparser.start= function(){
              var element={name:"", internalindex:"", id:"", equivalentTo: ""};//oggetto equivalent
              for(var i=0; i<equivalents.length;i++)
                 {       
-                        element.id= equivalents[i].id();
+                        
+                        element.id= equivalents[""+i].id();
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                         if (typeof element.name=='undefined')
                             element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
@@ -156,11 +158,13 @@ myparser.start= function(){
         myparser.findSuperclasses(id);
         return data;  
     }
+    
 
 
 
 
 return myparser;
 }
+
     
        // console.log(node.id);
