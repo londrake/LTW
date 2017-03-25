@@ -72,7 +72,7 @@
     },
     "attributes" : [ "equivalent" ],
     "id" : "2",
-    "superClasses" : [ "1" ]
+    "superClasses" : [ "1"]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Padre",
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",

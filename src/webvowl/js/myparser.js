@@ -58,6 +58,33 @@ myparser.start= function(){
         
         
     }
+    myparser.getClasses= function(){
+        var array=[];
+            
+        
+        for (var i=0; i< parsed.class.length; i++){
+            if(parsed.class[i].type=="owl:Thing" || parsed.class[i].type=="owl:Class" || parsed.class[i].type== "owl:equivalentClass")
+            {
+                var item={ id:"", name:"",  type: ""};
+                item.id= parsed.class[i].id;
+                item.type=parsed.class[i].type;
+                item.name=parsed.classAttribute[i].label[language];
+                if (typeof item.name=='undefined')
+                    item.name= parsed.classAttribute[i].label["IRI-based"];
+                
+                array.push(item);
+            }
+                
+        }
+        return array;        
+        
+    }
+    
+    myparser.getProperty= function(){
+        
+        
+    }
+        
     
     myparser.read=function(id){
         

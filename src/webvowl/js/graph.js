@@ -813,7 +813,7 @@ module.exports = function (graphContainerSelector) {
         
         //Script menu contestuale tasto destro
         function myscript(){
-            var stile = "top=10, left=10, width=250, height=200, status=no, menubar=no, toolbar=no scrollbars=no";
+            var stile = "top=center, left=center, width=600, height=250, status=no, menubar=no, toolbar=no scrollbars=no";
            
             var menu = [{
         name: 'create',
