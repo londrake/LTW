@@ -106,23 +106,25 @@ myparser.start= function(){
             {
 
                 if (parsed.propertyAttribute[i].domain==id && parsed.property[i].type=="owl:disjointWith"){
-                    var element={name:"", internalindex:"", id:"", equivalentTo: ""};
+                    var element={name:"", internalindex:"", id:"", equivalentTo: "", type:""};
                     element.id= parsed.propertyAttribute[i].range;
                     element.internalindex= i;
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
-                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];                    
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                    element.type=parsed.class[myparser.findClassIndex(element.id)].type;
                     data.disjoinWith.push(element);
                    
                     
                 }
                 if (parsed.propertyAttribute[i].range==id && parsed.property[i].type=="owl:disjointWith"){
-                    var element={name:"", internalindex:"", id:"", equivalentTo: ""};
+                    var element={name:"", internalindex:"", id:"", equivalentTo: "", type:""};
                     element.id= parsed.propertyAttribute[i].domain;
                     element.internalindex= i;
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
-                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];                    
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"]; 
+                    element.type=parsed.class[myparser.findClassIndex(element.id)].type;
                     data.disjoinWith.push(element);
                    
                     
@@ -134,11 +136,12 @@ myparser.start= function(){
                 
                 
                 for(var i=0; i<parsed.classAttribute[myparser.findClassIndex(id)].superClasses.length;i++)
-                {   var element={name:"", internalindex:"", id:"", equivalentTo: ""};                 
+                {   var element={name:"", internalindex:"", id:"", equivalentTo: "", type:""};                 
                     element.id= parsed.classAttribute[myparser.findClassIndex(id)].superClasses[i];                    
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                    element.type=parsed.class[myparser.findClassIndex(element.id)].type; 
                     data.superClasses.push(element);                   
                 
                 }                
@@ -152,11 +155,12 @@ myparser.start= function(){
                 
                 
                 for(var i=0; i<parsed.classAttribute[myparser.findClassIndex(id)].subClasses.length;i++)
-                {   var element={name:"", internalindex:"", id:"", equivalentTo: ""};                 
+                {   var element={name:"", internalindex:"", id:"", equivalentTo: "", type:""};                 
                     element.id= parsed.classAttribute[myparser.findClassIndex(id)].subClasses[i];                    
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                    element.type=parsed.class[myparser.findClassIndex(element.id)].type;
                     data.subClassOf.push(element);                   
                 
                 }                
@@ -172,11 +176,12 @@ myparser.start= function(){
              var equivalents= parsed.classAttribute[myparser.findClassIndex(id)].equivalent;
              var ind=myparser.findClassIndex(id);
             for(var i=0; i<equivalents.length;i++)
-                {       var element={name:"", internalindex:"", id:"", equivalentTo: ""};//oggetto equivalent
+                {       var element={name:"", internalindex:"", id:"", equivalentTo: "",type:""};//oggetto equivalent
                         element.id= equivalents[i].id();
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                         if (typeof element.name=='undefined')
                             element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                        element.type=parsed.class[myparser.findClassIndex(element.id)].type;
                         data.equivalent.push(element);
 
                     

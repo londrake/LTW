@@ -189,19 +189,19 @@ page.htmlCreator=function(oDom, insert,nodo){
         input=oDom.document.getElementById("superclass");               
                 
         for(var i=0; i< data.superClasses.length;i++){
-            input.value+=data.superClasses[i].name;        
+            input.value+=data.superClasses[i].name +" : "+ data.superClasses[i].type +" : "+ data.superClasses[i].id;        
         }
         select=oDom.document.getElementById("disjointslc");
         for(var i=0; i< data.disjoinWith.length;i++){
-            select.add( new Option(data.disjoinWith[i].name));        
+            select.add( new Option(data.disjoinWith[i].name+" : "+ data.disjoinWith[i].type +" : " + data.disjoinWith[i].id));        
         }        
         select=oDom.document.getElementById("subclassesslc");               
         for(var i=0; i< data.subClassOf.length;i++){
-            select.add( new Option(data.subClassOf[i].name));        
+            select.add( new Option(data.subClassOf[i].name+" : "+ data.subClassOf[i].type +" : " + data.subClassOf[i].id));        
         }
         select=oDom.document.getElementById("equivalentslc");       
         for(var i=0; i< data.equivalent.length;i++){
-            select.add( new Option(data.equivalent[i].name));       
+            select.add( new Option(data.equivalent[i].name+" : "+ data.equivalent[i].type +" : " + data.equivalent[i].id));       
         }        
         
                 
