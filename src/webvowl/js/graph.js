@@ -812,8 +812,8 @@ module.exports = function (graphContainerSelector) {
 		});
         
         //Script menu contestuale tasto destro
-        function myscript(){
-            var stile = "top=center, left=center, width=600, height=250, status=no, menubar=no, toolbar=no scrollbars=no";
+        function myContextMenu(){
+            var stile = "top=center, left=center, width=450, height=220, status=no, menubar=no, toolbar=no scrollbars=no";
            
             var menu = [{
         name: 'create',
@@ -822,13 +822,12 @@ module.exports = function (graphContainerSelector) {
         fun: function () {            
            var oDom= window.open('../pop.html', "", stile);
                 oDom.onload = function() {
-                page.initialize(graph);
-                
+                page.initialize(graph);                
                 page.htmlCreator(oDom,true,_clickedNode);
             };           
         }
     }, {
-        name: 'update',
+        name: 'edit',
        // img: 'images/update.png',
         title: 'update button',
         fun: function () {
@@ -843,13 +842,13 @@ module.exports = function (graphContainerSelector) {
        // img: 'images/delete.png',
         title: 'delete button',
         fun: function () {
-            alert('i am delete button')
+            //implementa
         }
     }];
  
 //Calling context menu
  $('#'+_clickedNode.id()).contextMenu(menu);
- $('#'+_clickedNode.id()).contextMenu("open",{top:(Mouse.y),left:(Mouse.x)});
+ $('#'+ _clickedNode.id()).contextMenu("open",{top:(Mouse.y),left:(Mouse.x)});
             
             
             
@@ -862,7 +861,7 @@ module.exports = function (graphContainerSelector) {
             //graph.start(); // funzione che re-parsa il file JSON e disegna il grafo. da richiamare dopo edit(scrittura file nuovo)
             _clickedNode=clickedNode;
             mynode=clickedNode;
-            myscript();
+            myContextMenu();
             executeModules(clickedNode);
             
             

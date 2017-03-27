@@ -15,12 +15,12 @@ page.initialize=function(g){
 }
 
 
-page.htmlCreator=function(oDom, insert,nodo){
+page.htmlCreator=function(oDom, insert, node){
     
     //console.log("lingua selezionata: "+ grafo.language());
     myparser.set_language(grafo.language());
     myparser.start();
-    var data= myparser.read(nodo.id()),
+    var data= myparser.read(node.id()),
         classesArray=myparser.getClasses();
     
     
@@ -37,7 +37,7 @@ page.htmlCreator=function(oDom, insert,nodo){
     // creazione della pagina popup con gli elementi gestiti e relativi id
     //id
     span.setAttribute("class", "text");
-    span.innerHTML="id:  "+ nodo.id();
+    span.innerHTML="id:  "+ node.id();
     div.appendChild(span);
     mainDiv.appendChild(div);
     //nome

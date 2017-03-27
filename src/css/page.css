@@ -1,0 +1,23 @@
+span.text {
+	bottom: 0;
+	color: #bdc3c7;
+	height: 100%;
+	position: relative;
+	right: 0;
+	top:10;
+	width: 22%;
+	border-left: 1px solid #34495E;
+}
+
+body {
+	background: rgb(24, 32, 42);
+	height: auto;
+	font-size: 14px;
+	font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+	line-height: 1;
+	margin: 0;
+	overflow: hidden;
+	padding-left: 10;
+	position: relative;
+	width: auto;
+}
