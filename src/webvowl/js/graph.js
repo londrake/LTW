@@ -811,9 +811,9 @@ module.exports = function (graphContainerSelector) {
 			executeModules(clickedNode);
 		});
         
-        //Script menu contestuale tasto destro
+        //Script menu contestuale tasto destro ADD
         function myContextMenu(){
-            var stile = "top=center, left=center, width=450, height=220, status=no, menubar=no, toolbar=no scrollbars=no";
+            var stile = "top=center, left=center, width=600, height=220, status=no, menubar=no, toolbar=no scrollbars=no";
            
             var menu = [{
         name: 'create',
