@@ -19,11 +19,12 @@ page.initialize=function(g){
 }
 save=function(){
      var data= {id:"", name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClasses:[]};
-     data.id= oDom.document.getElementById("id").value;
+     data.id= oDom.document.getElementById("id").innerHTML;
      data.name=oDom.document.getElementById("name").value;
      data.type=oDom.document.getElementById("type").value;
      data.comment=oDom.document.getElementById("comment").value;
-     data.superClasses=oDom.document.getElementById("superclass").value;
+     var temp=oDom.document.getElementById("superclass");
+     data.superClasses=temp.substring(temp.lastIndexOf(":")+2);
      var select =oDom.document.getElementById("disjointslc");
      for (var i=0; i<select.options.length; i++)
         {
