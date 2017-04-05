@@ -4,9 +4,11 @@ module.exports = function () {
         grafo,
         myparser=require("./myparser")(),
         oDom,
-        hDisjoint=[],
-        hEquivalent=[],
-        hSubclasses=[];
+        hDisjoint=[],// highlight disjoint
+        hEquivalent=[],//highlight ...
+        hSubclasses=[],
+        data,
+        editData= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};
         
         
 		
@@ -18,32 +20,32 @@ page.initialize=function(g){
     
 }
 save=function(){
-     var data= {id:"", name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClasses:[]};
-     data.id= oDom.document.getElementById("id").innerHTML;
-     data.name=oDom.document.getElementById("name").value;
-     data.type=oDom.document.getElementById("type").value;
-     data.comment=oDom.document.getElementById("comment").value;
-     var temp=oDom.document.getElementById("superclass");
-     data.superClasses=temp.substring(temp.lastIndexOf(":")+2);
+     
+     editData.id= oDom.document.getElementById("id").innerHTML.substring(oDom.document.getElementById("id").innerHTML.lastIndexOf(":")+1);
+     editData.name=oDom.document.getElementById("name").value;
+     editData.type=oDom.document.getElementById("type").value;
+     editData.comment=oDom.document.getElementById("comment").value;
+     var temp=oDom.document.getElementById("superclass").value;
+     editData.superClasses=temp.substring(temp.lastIndexOf(":")+2);
      var select =oDom.document.getElementById("disjointslc");
      for (var i=0; i<select.options.length; i++)
         {
-            data.disjoinWith.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+            editData.disjoint.disjoinWith.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
         }
     select=oDom.document.getElementById("subclassesslc");
      for (var i=0; i<select.options.length; i++)
         {
-            data.subClassOf.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+            editData.subClassOf.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
         }
     select=oDom.document.getElementById("equivalentslc");
      for (var i=0; i<select.options.length; i++)
         {
-            data.equivalent.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+            editData.equivalent.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
         }    
-    console.log(data);
+    console.log(editData);
 }
 
 add=function(id){
@@ -55,17 +57,38 @@ add=function(id){
             if (select.options[i].text==input.value)
                 exist=true;
         }
-    if(!exist)
+    if(!exist){
         select.add(new Option(input.value));   
+        if (id=="disjoint")
+            editData.disjoint.added.push(input.value.substring(input.value.lastIndexOf(":")+2));
+        
+    }
 
     
 }
 del=function(id){
     var select= oDom.document.getElementById(id+"slc");
-    select.remove(select.selectedIndex);
-    
+    var selectedId= select.options[select.selectedIndex].text.substring(select.options[select.selectedIndex].text.lastIndexOf(":")+2);// id del nodod selzionato
+    if (id=="disjoint"){
+            for(var i=0; i<data.disjoinWith.length; i++){
+                if (data.disjoinWith[i].id==selectedId){
+                    editData.disjoint.deleted.push(data.disjoinWith[i]);
+                    var tempIndex=null;
+                    for( var j=0; j< editData.disjoint.added.length; j++){
+                        if(editData.disjoint.added[j]==data.disjoinWith[i])
+                            tempIndex=j;      
+                    }
+                    if(tempIndex!=null)
+                        editData.disjoint.added.remove(tempIndex);
+                }
+                    
+                            
+        }
+    }
+    select.remove(select.selectedIndex);    
 }
 
+//evidenzia su grafo il nodo selezionato
 hightlightNode= function(id){
     grafo.resetSearchHighlight();
     var obj= oDom.document.getElementById(id);
@@ -95,8 +118,8 @@ page.htmlCreator=function(oDomm, insert, node){
     //console.log("lingua selezionata: "+ grafo.language());
     myparser.set_language(grafo.language());
     myparser.start();
-    var data= myparser.read(node.id()),
-        classesArray=myparser.getClasses();
+    data=myparser.read(node.id());
+    var classesArray=myparser.getClasses();
     oDom=oDomm;
     
     //insert= true : inserimento, altriment è edit

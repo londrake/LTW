@@ -17,6 +17,8 @@ myparser.start= function(){
     
  
 }
+
+
     
 
     
@@ -49,10 +51,7 @@ myparser.start= function(){
         
     }
     
-    myparser.edit =function(data){
-        
-    }
-    
+
     myparser.delete =function(id){
         
         
@@ -80,7 +79,75 @@ myparser.start= function(){
         
     }
     
-    myparser.getProperty= function(){
+    
+    getMaxId= function(){
+        var cMax=0,pMax=0;// vettore contenente l'indice massimo delle classi[0] e delle proprietà[1]
+        
+        for (var i=0; i<parsed.property.length;i++)
+            {
+                if (parsed.property[i].id>pMax)
+                    pMax=parsed.property[i];
+                
+            }
+        
+        for (var i=0; i<parsed.class.length;i++)
+            {
+                if (parsed.class[i].id>cMax)
+                    cMax=parsed.class[i];
+                
+            }
+        
+        return [cMax,pMax];
+                
+    }
+ 
+    
+    
+    myparser.edit= function(data){
+        
+    /*
+    data= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:{equivalent:[], added:[], deleted:[]}, superClasses:[]};    
+    */  
+        
+       var index= myparser.findClassIndex(data.id);//recupero l'indice
+        //nome
+        var temp= parsed.classAttribute[index].label[language];
+        var maxId=getMaxId();//0 per classi 1 per proprietà
+        
+        if (typeof temp=='undefined')
+            parsed.classAttribute[index].label["IRI-based"]=data.name;
+        else
+            parsed.classAttribute[index].label[language] =data.name;        
+       //tipo
+        temp= parsed.class[index].type;  
+    
+        if (typeof parsed.classAttribute[index].comment != 'undefined'){
+            parsed.classAttribute[index].comment[language]=data.comment;
+        }
+        //superclasse        
+        parsed.classAttribute[index].superClasses= data.superClasses;
+        //disjoint
+                //rimozione nodi se ve ne sono
+             for(var i=0; i<data.disjoint.deleted.length; i++ ){
+                parsed.property.remove(data.disjoint.deleted[i].internalindex);
+                parsed.propertyAttribute.remove(data.disjoint.deleted[i].internalindex);
+             }
+        
+        
+        
+        //equivalent
+            //rimozione nodi se ve ne sono
+             parsed.classAttribute[index].equivalent= data.equivalent;
+        //sub class
+            parsed.classAttribute[index].subClasses= data.subClassOf;
+             
+         
+        
+        
+        
+        
+        
+        
         
         
     }
@@ -178,6 +245,7 @@ myparser.start= function(){
             for(var i=0; i<equivalents.length;i++)
                 {       var element={name:"", internalindex:"", id:"", equivalentTo: "",type:""};//oggetto equivalent
                         element.id= equivalents[i].id();
+                        element.internalindex=i;
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                         if (typeof element.name=='undefined')
                             element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
