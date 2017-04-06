@@ -1,7 +1,8 @@
 
 module.exports = function () {
 	var myparser = {},
-        language;  
+        language;
+       
     
     myparser.set_language=function(l){
         
@@ -140,6 +141,9 @@ myparser.start= function(){
              parsed.classAttribute[index].equivalent= data.equivalent;
         //sub class
             parsed.classAttribute[index].subClasses= data.subClassOf;
+        console.log(JSON.stringify(parsed));        
+        _app.loadOntologyFromText(JSON.stringify(parsed),undefined,undefined);
+        
              
          
         

@@ -52,8 +52,10 @@ add=function(id){
     var input= oDom.document.getElementById(id);
     var select= oDom.document.getElementById(id+"slc");
     var exist=false;
+    var valore;
     for (var i=0; i<select.options.length; i++)
         {
+            valore=select.options[i].text;
             if (select.options[i].text==input.value)
                 exist=true;
         }
@@ -63,23 +65,27 @@ add=function(id){
             editData.disjoint.added.push(input.value.substring(input.value.lastIndexOf(":")+2));
         
     }
-
+        // DA FARE: controlla se in deleted c'è il nodo da aggiungere ed eliminarlo da deleted.
     
 }
+
 del=function(id){
     var select= oDom.document.getElementById(id+"slc");
     var selectedId= select.options[select.selectedIndex].text.substring(select.options[select.selectedIndex].text.lastIndexOf(":")+2);// id del nodod selzionato
     if (id=="disjoint"){
+        //elimino dal vettore added
+            
+             for( var j=0; j< editData.disjoint.added.length; j++){
+                     if(editData.disjoint.added[j]==selectedId)
+                         editData.disjoint.added.remove(j);    
+             }
+            
+                
+        //se è presente nell'ontologia originale, lo aggiungo a del
             for(var i=0; i<data.disjoinWith.length; i++){
                 if (data.disjoinWith[i].id==selectedId){
                     editData.disjoint.deleted.push(data.disjoinWith[i]);
-                    var tempIndex=null;
-                    for( var j=0; j< editData.disjoint.added.length; j++){
-                        if(editData.disjoint.added[j]==data.disjoinWith[i])
-                            tempIndex=j;      
-                    }
-                    if(tempIndex!=null)
-                        editData.disjoint.added.remove(tempIndex);
+                    
                 }
                     
                             
@@ -87,6 +93,7 @@ del=function(id){
     }
     select.remove(select.selectedIndex);    
 }
+
 
 //evidenzia su grafo il nodo selezionato
 hightlightNode= function(id){

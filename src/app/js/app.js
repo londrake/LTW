@@ -153,5 +153,6 @@ module.exports = function () {
 		graph.updateStyle();
 		navigationMenu.updateVisibilityStatus();
 	}
+    _app=app;//ADD
 	return app;
 };
