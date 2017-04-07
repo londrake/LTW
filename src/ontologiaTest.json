@@ -7,7 +7,7 @@
   },
   "namespace" : [ ],
   "metrics" : {
-    "classCount" : 6,
+    "classCount" : 7,
     "objectPropertyCount" : 0,
     "datatypePropertyCount" : 0,
     "individualCount" : 0
@@ -25,10 +25,13 @@
     "id" : "1",
     "type" : "owl:Class"
   }, {
-    "id" : "4",
+    "id" : "5",
     "type" : "owl:equivalentClass"
   }, {
-    "id" : "9",
+    "id" : "10",
+    "type" : "owl:Class"
+  }, {
+    "id" : "4",
     "type" : "owl:Class"
   } ],
   "classAttribute" : [ {
@@ -47,7 +50,7 @@
     "superClasses" : [ "1" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Figlio_1",
-    "equivalent" : [ "4" ],
+    "equivalent" : [ "5" ],
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
     "instances" : 0,
     "label" : {
@@ -58,7 +61,7 @@
     },
     "attributes" : [ "equivalent" ],
     "id" : "3",
-    "superClasses" : [ "1" ]
+    "superClasses" : [ "1", "4" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Figlio_2",
     "equivalent" : [ "0" ],
@@ -72,7 +75,7 @@
     },
     "attributes" : [ "equivalent" ],
     "id" : "2",
-    "superClasses" : [ "1"]
+    "superClasses" : [ "1" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Padre",
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
@@ -80,9 +83,9 @@
     "label" : {
       "IRI-based" : "Padre"
     },
-    "subClasses" : [ "4", "0", "3", "2" ],
+    "subClasses" : [ "5", "0", "3", "2" ],
     "id" : "1",
-    "superClasses" : [ "9" ]
+    "superClasses" : [ "10" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#gigolo",
     "equivalent" : [ "3" ],
@@ -92,7 +95,7 @@
       "IRI-based" : "gigolo"
     },
     "attributes" : [ "equivalent" ],
-    "id" : "4",
+    "id" : "5",
     "superClasses" : [ "1" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Nonno",
@@ -102,12 +105,18 @@
       "IRI-based" : "Nonno"
     },
     "subClasses" : [ "1" ],
-    "id" : "9"
+    "id" : "10"
+  }, {
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Ruta",
+    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
+    "instances" : 0,
+    "label" : {
+      "IRI-based" : "Ruta"
+    },
+    "subClasses" : [ "3" ],
+    "id" : "4"
   } ],
   "property" : [ {
-    "id" : "5",
-    "type" : "rdfs:SubClassOf"
-  }, {
     "id" : "6",
     "type" : "rdfs:SubClassOf"
   }, {
@@ -117,41 +126,52 @@
     "id" : "8",
     "type" : "rdfs:SubClassOf"
   }, {
-    "id" : "10",
-    "type" : "owl:disjointWith"
+    "id" : "9",
+    "type" : "rdfs:SubClassOf"
   }, {
     "id" : "11",
+    "type" : "rdfs:SubClassOf"
+  }, {
+    "id" : "12",
+    "type" : "owl:disjointWith"
+  }, {
+    "id" : "13",
     "type" : "rdfs:SubClassOf"
   } ],
   "propertyAttribute" : [ {
     "range" : "1",
     "domain" : "0",
-    "attributes" : [ "anonymous", "object" ],
-    "id" : "5"
-  }, {
-    "range" : "1",
-    "domain" : "3",
-    "attributes" : [ "anonymous", "object" ],
+    "attributes" : [ "object", "anonymous" ],
     "id" : "6"
   }, {
     "range" : "1",
-    "domain" : "2",
-    "attributes" : [ "anonymous", "object" ],
+    "domain" : "3",
+    "attributes" : [ "object", "anonymous" ],
     "id" : "7"
   }, {
-    "range" : "9",
-    "domain" : "1",
-    "attributes" : [ "anonymous", "object" ],
+    "range" : "1",
+    "domain" : "2",
+    "attributes" : [ "object", "anonymous" ],
     "id" : "8"
+  }, {
+    "range" : "10",
+    "domain" : "1",
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "9"
+  }, {
+    "range" : "4",
+    "domain" : "3",
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "11"
   }, {
     "range" : "2",
     "domain" : "3",
-    "attributes" : [ "anonymous", "object" ],
-    "id" : "10"
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "12"
   }, {
     "range" : "1",
-    "domain" : "4",
-    "attributes" : [ "anonymous", "object" ],
-    "id" : "11"
+    "domain" : "5",
+    "attributes" : [ "object", "anonymous" ],
+    "id" : "13"
   } ]
 }

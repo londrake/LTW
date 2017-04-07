@@ -49,23 +49,64 @@ save=function(){
 }
 
 add=function(id){
+    var message=oDom.document.getElementById("message");
     var input= oDom.document.getElementById(id);
     var select= oDom.document.getElementById(id+"slc");
     var exist=false;
     var valore;
-    for (var i=0; i<select.options.length; i++)
-        {
-            valore=select.options[i].text;
-            if (select.options[i].text==input.value)
-                exist=true;
-        }
-    if(!exist){
-        select.add(new Option(input.value));   
-        if (id=="disjoint")
-            editData.disjoint.added.push(input.value.substring(input.value.lastIndexOf(":")+2));
+    message.innerHTML="";
+    var error=0;//no errors
+    
+    if (id=="subclasses"){
+        // aggiungo un nodo padre come figlio o viceversa.
+        var superclasseSlc= oDom.document.getElementById("superclassslc").options;
+       for (var i=0; i< superclasseSlc.length; i++){
+           if (superclasseSlc[i].text==input.value)
+            error=1;
+           
+       }       
+              
+    }else if(id=="superclass"){
+        var subclassSlc= oDom.document.getElementById("subclassesslc").options;
+        for (var i=0; i< subclassSlc.length; i++){
+           if (subclassSlc[i].text==input.value)
+            error=2;
+           
+       }
         
     }
-        // DA FARE: controlla se in deleted c'è il nodo da aggiungere ed eliminarlo da deleted.
+    
+    
+    if (error==0){
+        // se l'elemento esiste non lo aggiunge.
+        for (var i=0; i<select.options.length; i++)
+            {
+                valore=select.options[i].text;
+                if (select.options[i].text==input.value)
+                    exist=true;
+            }
+        var selectedIndex=input.value.substring(input.value.lastIndexOf(":")+2);
+        if(!exist){
+            select.add(new Option(input.value));   
+            if (id=="disjoint"){
+                editData.disjoint.added.push(selectedIndex);
+                // FATTO: controlla se in deleted c'è il nodo da aggiungere ed eliminarlo da deleted.
+                var index = editData.disjoint.deleted.indexOf(selectedIndex);
+                if (index > -1) {
+                    editData.disjoint.deleted.splice(index, 1);
+                    }
+            }
+        }
+        input.value="";
+    }else if (error==1){
+        message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME FIGLIO UN NODO PADRE.";
+        
+    }else if (error==2){
+        message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME PADRE UN NODO FIGLIO.";
+        
+    }
+        
+    
     
 }
 
@@ -74,21 +115,17 @@ del=function(id){
     var selectedId= select.options[select.selectedIndex].text.substring(select.options[select.selectedIndex].text.lastIndexOf(":")+2);// id del nodod selzionato
     if (id=="disjoint"){
         //elimino dal vettore added
-            
-             for( var j=0; j< editData.disjoint.added.length; j++){
-                     if(editData.disjoint.added[j]==selectedId)
-                         editData.disjoint.added.remove(j);    
-             }
-            
-                
+        var index = editData.disjoint.added.indexOf(selectedId);
+        if (index > -1) {
+            editData.disjoint.added.splice(index, 1);
+            }
+                            
         //se è presente nell'ontologia originale, lo aggiungo a del
             for(var i=0; i<data.disjoinWith.length; i++){
                 if (data.disjoinWith[i].id==selectedId){
                     editData.disjoint.deleted.push(data.disjoinWith[i]);
                     
-                }
-                    
-                            
+                }                            
         }
     }
     select.remove(select.selectedIndex);    
@@ -99,7 +136,12 @@ del=function(id){
 hightlightNode= function(id){
     grafo.resetSearchHighlight();
     var obj= oDom.document.getElementById(id);
-    var string= obj.value;
+    var string;
+    if (id.endsWith("slc")){
+        string = obj.options[obj.selectedIndex].text;
+    }else{
+        string= obj.value;
+    }     
     var id= string.substring(string.lastIndexOf(":")+2);
     grafo.highLightNodes([id]);
       
@@ -122,11 +164,13 @@ hightlightNode= function(id){
 
 page.htmlCreator=function(oDomm, insert, node){
     
+    //azzero le variabili
+    editData= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};    
     //console.log("lingua selezionata: "+ grafo.language());
     myparser.set_language(grafo.language());
     myparser.start();
     data=myparser.read(node.id());
-    var classesArray=myparser.getClasses();
+    var classesArray=myparser.getClasses(node.id());
     oDom=oDomm;
     
     //insert= true : inserimento, altriment è edit
@@ -208,24 +252,30 @@ page.htmlCreator=function(oDomm, insert, node){
     div =oDom.document.createElement("div");
     span =oDom.document.createElement("span");
     span.setAttribute("class", "text");
+    select= oDom.document.createElement("select");
     add_btn= oDom.document.createElement("input");
     del_btn=oDom.document.createElement("input");
-    span.innerHTML="SubClassOf:  ";    
-    add_btn.setAttribute("id","superclassadd");
-    del_btn.setAttribute("id", "superclassdel");
     add_btn.setAttribute("value","ADD");
     del_btn.setAttribute("value", "DELETE");
-    add_btn.setAttribute("type", "button");
+     add_btn.setAttribute("type", "button");
     del_btn.setAttribute("type", "button");
+    select.setAttribute("id","superclassslc");
+    add_btn.setAttribute("id","superclassadd");
+    del_btn.setAttribute("id", "superclassdel");
     add_btn.onclick=function(){add("superclass")};
     del_btn.onclick=function(){del("superclass")};
+    span.innerHTML="SuperClasses:  ";
     input =oDom.document.createElement("input");
     input.setAttribute("id","superclass");
     input.setAttribute("list", "classList");
-    input.setAttribute("class", "stile");    
+    input.setAttribute("class", "stile");
+    input.onchange=function(){hightlightNode("superclass")};
     span.appendChild(input);
+    span.appendChild(add_btn);
+    span.appendChild(del_btn);
+    span.appendChild(select);
     div.appendChild(span);
-    mainDiv.appendChild(div);
+    mainDiv.appendChild(div);    
     //sottoclasse
     div =oDom.document.createElement("div");
     span =oDom.document.createElement("span");
@@ -293,6 +343,15 @@ page.htmlCreator=function(oDomm, insert, node){
     span.appendChild(save_btn);
     div.appendChild(span);
     mainDiv.appendChild(div);
+    //label messaggi informativi
+    div =oDom.document.createElement("div");
+    span =oDom.document.createElement("span");
+    span.setAttribute("class", "text");
+    span.setAttribute("id", "message");
+    span.innerHTML="";    
+    div.appendChild(span);
+    mainDiv.appendChild(div);
+    
     //creo la lista di classi;
     var datalist=oDom.document.createElement("datalist");
     datalist.setAttribute("id", "classList");
@@ -324,10 +383,11 @@ page.htmlCreator=function(oDomm, insert, node){
         input.value=data.comment;         
         input=oDom.document.getElementById("superclass");               
         //superclass        
+        select=oDom.document.getElementById("superclassslc");       
         for(var i=0; i< data.superClasses.length;i++){
-            input.value+=data.superClasses[i].name +" : "+ data.superClasses[i].type +" : "+ data.superClasses[i].id;        
-        }        
-        input.onchange=function(){hightlightNode("superclass")};
+            select.add( new Option(data.superClasses[i].name+" : "+ data.superClasses[i].type +" : " + data.superClasses[i].id));        
+        }       
+        select.onchange=function(){hightlightNode("superclass")};
         //disjoint
         select=oDom.document.getElementById("disjointslc");       
         for(var i=0; i< data.disjoinWith.length;i++){

@@ -58,12 +58,12 @@ myparser.start= function(){
         
         
     }
-    myparser.getClasses= function(){
+    myparser.getClasses= function(id){
         var array=[];
             
         
         for (var i=0; i< parsed.class.length; i++){
-            if(parsed.class[i].type=="owl:Thing" || parsed.class[i].type=="owl:Class" || parsed.class[i].type== "owl:equivalentClass")
+            if((parsed.class[i].type=="owl:Thing" || parsed.class[i].type=="owl:Class" || parsed.class[i].type== "owl:equivalentClass") && parsed.class[i].id!=id)
             {
                 var item={ id:"", name:"",  type: ""};
                 item.id= parsed.class[i].id;

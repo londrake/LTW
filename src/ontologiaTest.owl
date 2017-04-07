@@ -19,6 +19,9 @@
         <Class IRI="#Figlio_2"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#Ruta"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#Figlio_1"/>
     </Declaration>
     <Declaration>
@@ -41,6 +44,10 @@
     <SubClassOf>
         <Class IRI="#Figlio_1"/>
         <Class IRI="#Padre"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Figlio_1"/>
+        <Class IRI="#Ruta"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#Figlio_2"/>
