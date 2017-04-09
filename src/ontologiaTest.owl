@@ -69,6 +69,10 @@
         <Class IRI="#Figlio_1"/>
         <Class IRI="#Figlio_2"/>
     </DisjointClasses>
+    <DisjointClasses>
+        <Class IRI="#Figlio_1"/>
+        <Class IRI="#gigolo"/>
+    </DisjointClasses>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#Figlio_1</IRI>

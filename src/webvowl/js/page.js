@@ -8,7 +8,8 @@ module.exports = function () {
         hEquivalent=[],//highlight ...
         hSubclasses=[],
         data,
-        editData= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};
+        classArray=[],
+        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]};
         
         
 		
@@ -18,36 +19,51 @@ module.exports = function () {
 page.initialize=function(g){
     grafo=g;
     
+    
 }
 save=function(){
      
-     editData.id= oDom.document.getElementById("id").innerHTML.substring(oDom.document.getElementById("id").innerHTML.lastIndexOf(":")+1);
+     editData.id= parseInt(oDom.document.getElementById("id").innerHTML.substring(oDom.document.getElementById("id").innerHTML.lastIndexOf(":")+2));
      editData.name=oDom.document.getElementById("name").value;
      editData.type=oDom.document.getElementById("type").value;
      editData.comment=oDom.document.getElementById("comment").value;
-     var temp=oDom.document.getElementById("superclass").value;
-     editData.superClasses=temp.substring(temp.lastIndexOf(":")+2);
+     
+     
      var select =oDom.document.getElementById("disjointslc");
+     editData.disjoint=[];
      for (var i=0; i<select.options.length; i++)
         {
-            editData.disjoint.disjoinWith.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+            editData.disjoint.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
         }
+    
+    select=oDom.document.getElementById("superclassslc");
+    editData.superClasses=[];
+     for (var i=0; i<select.options.length; i++)
+        {
+            editData.superClasses.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+            
+        }
+
     select=oDom.document.getElementById("subclassesslc");
+    editData.subClassOf=[];
      for (var i=0; i<select.options.length; i++)
         {
             editData.subClassOf.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
         }
     select=oDom.document.getElementById("equivalentslc");
+    editData.equivalent=[];
      for (var i=0; i<select.options.length; i++)
         {
             editData.equivalent.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
         }    
-    console.log(editData);
+    console.log(editData);    
+    _app.updateOntologyFromText(myparser.edit(editData,data),undefined,undefined);
+    
 }
-
+//FUNZIONE ADD
 add=function(id){
     var message=oDom.document.getElementById("message");
     var input= oDom.document.getElementById(id);
@@ -56,78 +72,62 @@ add=function(id){
     var valore;
     message.innerHTML="";
     var error=0;//no errors
-    
-    if (id=="subclasses"){
-        // aggiungo un nodo padre come figlio o viceversa.
-        var superclasseSlc= oDom.document.getElementById("superclassslc").options;
-       for (var i=0; i< superclasseSlc.length; i++){
-           if (superclasseSlc[i].text==input.value)
-            error=1;
-           
-       }       
-              
-    }else if(id=="superclass"){
-        var subclassSlc= oDom.document.getElementById("subclassesslc").options;
-        for (var i=0; i< subclassSlc.length; i++){
-           if (subclassSlc[i].text==input.value)
-            error=2;
-           
-       }
-        
-    }
-    
-    
-    if (error==0){
-        // se l'elemento esiste non lo aggiunge.
-        for (var i=0; i<select.options.length; i++)
-            {
-                valore=select.options[i].text;
-                if (select.options[i].text==input.value)
-                    exist=true;
-            }
-        var selectedIndex=input.value.substring(input.value.lastIndexOf(":")+2);
-        if(!exist){
-            select.add(new Option(input.value));   
-            if (id=="disjoint"){
-                editData.disjoint.added.push(selectedIndex);
-                // FATTO: controlla se in deleted c'è il nodo da aggiungere ed eliminarlo da deleted.
-                var index = editData.disjoint.deleted.indexOf(selectedIndex);
-                if (index > -1) {
-                    editData.disjoint.deleted.splice(index, 1);
-                    }
-            }
+    if (classArray.indexOf(input.value)!=-1){
+        if (id=="subclasses"){
+            // aggiungo un nodo padre come figlio o viceversa.
+            var superclasseSlc= oDom.document.getElementById("superclassslc").options;
+           for (var i=0; i< superclasseSlc.length; i++){
+               if (superclasseSlc[i].text==input.value)
+                error=1;
+
+           }       
+
+        }else if(id=="superclass"){
+            var subclassSlc= oDom.document.getElementById("subclassesslc").options;
+            for (var i=0; i< subclassSlc.length; i++){
+               if (subclassSlc[i].text==input.value)
+                error=2;
+
+           }
+
         }
-        input.value="";
-    }else if (error==1){
-        message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME FIGLIO UN NODO PADRE.";
-        
-    }else if (error==2){
-        message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME PADRE UN NODO FIGLIO.";
-        
+    }else{
+        error=3;
     }
+
+
+        if (error==0){
+            // se l'elemento esiste non lo aggiunge.
+            for (var i=0; i<select.options.length; i++)
+                {
+                    valore=select.options[i].text;
+                    if (select.options[i].text==input.value)
+                        exist=true;
+                }
+            var selectedIndex=input.value.substring(input.value.lastIndexOf(":")+2);
+            if(!exist){
+                select.add(new Option(input.value));             
+                }
+            input.value="";
+        }else if (error==1){
+            message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME FIGLIO UN NODO PADRE.";
+
+        }else if (error==2){
+            message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME PADRE UN NODO FIGLIO.";
+
+        }else if (error==3){
+            message.innerHTML="ERRORE: NON PUOI AGGIUNGERE UN NODO NON ESISTENTE, LO DEVI PRIMA CREARE.";
+
+        }
+    
         
     
     
 }
-
+//FUNZIONE DEL
 del=function(id){
     var select= oDom.document.getElementById(id+"slc");
     var selectedId= select.options[select.selectedIndex].text.substring(select.options[select.selectedIndex].text.lastIndexOf(":")+2);// id del nodod selzionato
-    if (id=="disjoint"){
-        //elimino dal vettore added
-        var index = editData.disjoint.added.indexOf(selectedId);
-        if (index > -1) {
-            editData.disjoint.added.splice(index, 1);
-            }
-                            
-        //se è presente nell'ontologia originale, lo aggiungo a del
-            for(var i=0; i<data.disjoinWith.length; i++){
-                if (data.disjoinWith[i].id==selectedId){
-                    editData.disjoint.deleted.push(data.disjoinWith[i]);
-                    
-                }                            
-        }
-    }
     select.remove(select.selectedIndex);    
 }
 
@@ -165,12 +165,14 @@ hightlightNode= function(id){
 page.htmlCreator=function(oDomm, insert, node){
     
     //azzero le variabili
-    editData= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};    
+    editData= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};
+    classArray=[];
     //console.log("lingua selezionata: "+ grafo.language());
     myparser.set_language(grafo.language());
-    myparser.start();
+    myparser.start(grafo);
     data=myparser.read(node.id());
     var classesArray=myparser.getClasses(node.id());
+    
     oDom=oDomm;
     
     //insert= true : inserimento, altriment è edit
@@ -360,6 +362,7 @@ page.htmlCreator=function(oDomm, insert, node){
         {
             var option=oDom.document.createElement("option");
             option.setAttribute("value", classesArray[i].name+ " : " + classesArray[i].type+ " : "+ classesArray[i].id);
+            classArray.push(classesArray[i].name+ " : " + classesArray[i].type+ " : "+ classesArray[i].id);
             datalist.appendChild(option);
             
         }

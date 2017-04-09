@@ -193,7 +193,7 @@
     </script>
     <script>
         var Mouse = {x:null, y:null};
-        var mynode, file_path,my,parsed,_app;
+        var mynode, file_path,my,_app,_json,parsed;
 
         $(document).on({
             "contextmenu": function(e) {
@@ -201,7 +201,7 @@
              Mouse.x=e.screenX;
              Mouse.y=e.screenY;
                 // Stop the context menu
-               // e.preventDefault();
+                e.preventDefault();
             }
         });
     </script>

@@ -22,13 +22,13 @@
     "id" : "2",
     "type" : "owl:equivalentClass"
   }, {
-    "id" : "1",
-    "type" : "owl:Class"
-  }, {
     "id" : "5",
     "type" : "owl:equivalentClass"
   }, {
-    "id" : "10",
+    "id" : "1",
+    "type" : "owl:Class"
+  }, {
+    "id" : "11",
     "type" : "owl:Class"
   }, {
     "id" : "4",
@@ -77,16 +77,6 @@
     "id" : "2",
     "superClasses" : [ "1" ]
   }, {
-    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Padre",
-    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
-    "instances" : 0,
-    "label" : {
-      "IRI-based" : "Padre"
-    },
-    "subClasses" : [ "5", "0", "3", "2" ],
-    "id" : "1",
-    "superClasses" : [ "10" ]
-  }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#gigolo",
     "equivalent" : [ "3" ],
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
@@ -98,6 +88,16 @@
     "id" : "5",
     "superClasses" : [ "1" ]
   }, {
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Padre",
+    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
+    "instances" : 0,
+    "label" : {
+      "IRI-based" : "Padre"
+    },
+    "subClasses" : [ "5", "0", "3", "2" ],
+    "id" : "1",
+    "superClasses" : [ "11" ]
+  }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Nonno",
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
     "instances" : 0,
@@ -105,7 +105,7 @@
       "IRI-based" : "Nonno"
     },
     "subClasses" : [ "1" ],
-    "id" : "10"
+    "id" : "11"
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Ruta",
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
@@ -129,49 +129,57 @@
     "id" : "9",
     "type" : "rdfs:SubClassOf"
   }, {
-    "id" : "11",
+    "id" : "10",
     "type" : "rdfs:SubClassOf"
   }, {
     "id" : "12",
-    "type" : "owl:disjointWith"
+    "type" : "rdfs:SubClassOf"
   }, {
     "id" : "13",
-    "type" : "rdfs:SubClassOf"
+    "type" : "owl:disjointWith"
+  }, {
+    "id" : "14",
+    "type" : "owl:disjointWith"
   } ],
   "propertyAttribute" : [ {
     "range" : "1",
-    "domain" : "0",
-    "attributes" : [ "object", "anonymous" ],
+    "domain" : "5",
+    "attributes" : [ "anonymous", "object" ],
     "id" : "6"
   }, {
     "range" : "1",
-    "domain" : "3",
-    "attributes" : [ "object", "anonymous" ],
+    "domain" : "0",
+    "attributes" : [ "anonymous", "object" ],
     "id" : "7"
   }, {
     "range" : "1",
-    "domain" : "2",
-    "attributes" : [ "object", "anonymous" ],
+    "domain" : "3",
+    "attributes" : [ "anonymous", "object" ],
     "id" : "8"
   }, {
-    "range" : "10",
-    "domain" : "1",
-    "attributes" : [ "object", "anonymous" ],
+    "range" : "1",
+    "domain" : "2",
+    "attributes" : [ "anonymous", "object" ],
     "id" : "9"
+  }, {
+    "range" : "11",
+    "domain" : "1",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "10"
   }, {
     "range" : "4",
     "domain" : "3",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "11"
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "12"
   }, {
     "range" : "2",
     "domain" : "3",
-    "attributes" : [ "object", "anonymous" ],
-    "id" : "12"
-  }, {
-    "range" : "1",
-    "domain" : "5",
-    "attributes" : [ "object", "anonymous" ],
+    "attributes" : [ "anonymous", "object" ],
     "id" : "13"
+  }, {
+    "range" : "3",
+    "domain" : "5",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "14"
   } ]
 }
