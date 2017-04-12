@@ -14,57 +14,52 @@
   },
   "class" : [ {
     "id" : "0",
-    "type" : "owl:equivalentClass"
+    "type" : "owl:Class"
   }, {
-    "id" : "3",
-    "type" : "owl:equivalentClass"
-  }, {
-    "id" : "2",
+    "id" : "1",
     "type" : "owl:equivalentClass"
   }, {
     "id" : "5",
     "type" : "owl:equivalentClass"
   }, {
-    "id" : "1",
+    "id" : "2",
     "type" : "owl:Class"
   }, {
-    "id" : "11",
+    "id" : "12",
     "type" : "owl:Class"
   }, {
-    "id" : "4",
-    "type" : "owl:Class"
+    "id" : "6",
+    "type" : "owl:equivalentClass"
+  }, {
+    "id" : "3",
+    "type" : "owl:equivalentClass"
   } ],
   "classAttribute" : [ {
-    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Ricchione",
-    "equivalent" : [ "2" ],
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Zio",
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
     "instances" : 0,
     "label" : {
-      "IRI-based" : "Ricchione"
+      "IRI-based" : "Zio"
     },
-    "comment" : {
-      "undefined" : "ricchionazzo"
-    },
-    "attributes" : [ "equivalent" ],
-    "id" : "0",
-    "superClasses" : [ "1" ]
+    "subClasses" : [ "1" ],
+    "id" : "0"
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Figlio_1",
-    "equivalent" : [ "5" ],
+    "equivalent" : [ "3" ],
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
     "instances" : 0,
     "label" : {
       "IRI-based" : "Figlio_1"
     },
     "comment" : {
-      "undefined" : "il trombatore di vecchie"
+      "undefined" : "l'amicone di turno"
     },
     "attributes" : [ "equivalent" ],
-    "id" : "3",
-    "superClasses" : [ "1", "4" ]
+    "id" : "1",
+    "superClasses" : [ "2", "0" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Figlio_2",
-    "equivalent" : [ "0" ],
+    "equivalent" : [ "6" ],
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
     "instances" : 0,
     "label" : {
@@ -74,19 +69,8 @@
       "undefined" : "figlio 2"
     },
     "attributes" : [ "equivalent" ],
-    "id" : "2",
-    "superClasses" : [ "1" ]
-  }, {
-    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#gigolo",
-    "equivalent" : [ "3" ],
-    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
-    "instances" : 0,
-    "label" : {
-      "IRI-based" : "gigolo"
-    },
-    "attributes" : [ "equivalent" ],
     "id" : "5",
-    "superClasses" : [ "1" ]
+    "superClasses" : [ "2" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Padre",
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
@@ -94,9 +78,9 @@
     "label" : {
       "IRI-based" : "Padre"
     },
-    "subClasses" : [ "5", "0", "3", "2" ],
-    "id" : "1",
-    "superClasses" : [ "11" ]
+    "subClasses" : [ "1", "5", "6", "3" ],
+    "id" : "2",
+    "superClasses" : [ "12" ]
   }, {
     "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Nonno",
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
@@ -104,20 +88,36 @@
     "label" : {
       "IRI-based" : "Nonno"
     },
-    "subClasses" : [ "1" ],
-    "id" : "11"
+    "subClasses" : [ "2" ],
+    "id" : "12"
   }, {
-    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Ruta",
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Francesco",
+    "equivalent" : [ "5" ],
     "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
     "instances" : 0,
     "label" : {
-      "IRI-based" : "Ruta"
+      "IRI-based" : "Francesco"
     },
-    "subClasses" : [ "3" ],
-    "id" : "4"
+    "comment" : {
+      "undefined" : "l'antipatico di turno"
+    },
+    "attributes" : [ "equivalent" ],
+    "id" : "6",
+    "superClasses" : [ "2" ]
+  }, {
+    "iri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4#Paolo",
+    "equivalent" : [ "1" ],
+    "baseIri" : "http://www.semanticweb.org/pietr/ontologies/2017/2/untitled-ontology-4",
+    "instances" : 0,
+    "label" : {
+      "IRI-based" : "Paolo"
+    },
+    "attributes" : [ "equivalent" ],
+    "id" : "3",
+    "superClasses" : [ "2" ]
   } ],
   "property" : [ {
-    "id" : "6",
+    "id" : "4",
     "type" : "rdfs:SubClassOf"
   }, {
     "id" : "7",
@@ -132,7 +132,7 @@
     "id" : "10",
     "type" : "rdfs:SubClassOf"
   }, {
-    "id" : "12",
+    "id" : "11",
     "type" : "rdfs:SubClassOf"
   }, {
     "id" : "13",
@@ -142,43 +142,43 @@
     "type" : "owl:disjointWith"
   } ],
   "propertyAttribute" : [ {
-    "range" : "1",
-    "domain" : "5",
+    "range" : "2",
+    "domain" : "1",
     "attributes" : [ "anonymous", "object" ],
-    "id" : "6"
+    "id" : "4"
   }, {
-    "range" : "1",
-    "domain" : "0",
+    "range" : "2",
+    "domain" : "5",
     "attributes" : [ "anonymous", "object" ],
     "id" : "7"
   }, {
-    "range" : "1",
-    "domain" : "3",
+    "range" : "2",
+    "domain" : "6",
     "attributes" : [ "anonymous", "object" ],
     "id" : "8"
-  }, {
-    "range" : "1",
-    "domain" : "2",
-    "attributes" : [ "anonymous", "object" ],
-    "id" : "9"
-  }, {
-    "range" : "11",
-    "domain" : "1",
-    "attributes" : [ "anonymous", "object" ],
-    "id" : "10"
-  }, {
-    "range" : "4",
-    "domain" : "3",
-    "attributes" : [ "anonymous", "object" ],
-    "id" : "12"
   }, {
     "range" : "2",
     "domain" : "3",
     "attributes" : [ "anonymous", "object" ],
+    "id" : "9"
+  }, {
+    "range" : "0",
+    "domain" : "1",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "10"
+  }, {
+    "range" : "12",
+    "domain" : "2",
+    "attributes" : [ "anonymous", "object" ],
+    "id" : "11"
+  }, {
+    "range" : "5",
+    "domain" : "1",
+    "attributes" : [ "anonymous", "object" ],
     "id" : "13"
   }, {
     "range" : "3",
-    "domain" : "5",
+    "domain" : "1",
     "attributes" : [ "anonymous", "object" ],
     "id" : "14"
   } ]

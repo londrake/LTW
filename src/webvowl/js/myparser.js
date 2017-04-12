@@ -29,16 +29,26 @@ myparser.start= function(grafo){
         return objindex; 
 }
     
-    myparser.findPropertyIndex=function(id1,id2){
+    myparser.findPropertyIndex=function(id1,id2,op){
         
-        var objindex=-1,
-        op="owl:disjointWith";
-        for(var i=0; i< parsed.property.length; i++){
-            
-            if (parsed.property[i].type==op &&(( parsed.propertyAttribute[i].range==id1 && parsed.propertyAttribute[i].domain==id2)||(parsed.propertyAttribute[i].range==id2 && parsed.propertyAttribute[i].domain==id1)))
-                objindex=i;            
-            
-        }
+        var objindex=-1;
+        
+            if(op=="owl:disjointWith"){
+                for(var i=0; i< parsed.property.length; i++){
+
+                    if (parsed.property[i].type==op &&(( parsed.propertyAttribute[i].range==id1 && parsed.propertyAttribute[i].domain==id2)||(parsed.propertyAttribute[i].range==id2 && parsed.propertyAttribute[i].domain==id1)))
+                        objindex=i;            
+
+                }
+            }else{
+                for(var i=0; i< parsed.property.length; i++){
+
+                    if (parsed.property[i].type==op && parsed.propertyAttribute[i].range==id1 && parsed.propertyAttribute[i].domain==id2)
+                        objindex=i;            
+
+                }
+                
+            }
         return objindex; 
 }
     
@@ -96,160 +106,324 @@ myparser.start= function(grafo){
                     }                
             }
             //popolamento vettore deleted
-            for (var i=0; i<baseData.disjoint.length;i++){
+            for (var i=0; i<disjoint.length;i++){
                 if (editData.disjoint.indexOf(disjoint[i])==-1)
                     {
-                        deleted.push(disjoint[i]);
+                        deleted.push(baseData.disjointWith[i]);
                     }                
             }
         }else if(op=="subclassof"){
             // popolamento vettore added
+            var subclassof=[];
+            for (var i=0; i<baseData.subClassOf.length;i++){
+                subclassof.push(baseData.subClassOf[i].id);
+            }
             
             for (var i=0; i<editData.subClassOf.length;i++){
-                if (baseData.subClassOf.indexOf(editData.subClassOf[i])==-1)
+                if (subclassof.indexOf(editData.subClassOf[i])==-1)
                     {
                         added.push(editData.subClassOf[i]);
                     }                
             }
             //popolamento vettore deleted
             for (var i=0; i<baseData.subClassOf.length;i++){
-                if (editData.subClassOf.indexOf(baseData.subClassOf[i])==-1)
+                if (editData.subClassOf.indexOf(baseData.subClassOf[i].id)==-1)
                     {
                         deleted.push(baseData.subClassOf[i]);
                     }                
             }
         }else if (op=="superclass"){
             // popolamento vettore added
+            var superclass=[];
+            for (var i=0; i<baseData.superClasses.length;i++){
+                superclass.push(baseData.superClasses[i].id);
+            }
             
             for (var i=0; i<editData.superClasses.length;i++){
-                if (baseData.superClasses.indexOf(editData.superClasses[i])==-1)
+                if (superclass.indexOf(editData.superClasses[i])==-1)
                     {
                         added.push(editData.superClasses[i]);
                     }                
             }
             //popolamento vettore deleted
             for (var i=0; i<baseData.superClasses.length;i++){
-                if (editData.superClasses.indexOf(baseData.superClasses[i])==-1)
+                if (editData.superClasses.indexOf(baseData.superClasses[i].id)==-1)
                     {
                         deleted.push(baseData.superClasses[i]);
                     }                
             }
         }else if (op=="equivalent"){
             // popolamento vettore added
+            var equivalent=[];
+            for (var i=0; i<baseData.equivalent.length;i++){
+                equivalent.push(baseData.equivalent[i].id);
+            }            
             
             for (var i=0; i<editData.equivalent.length;i++){
-                if (baseData.equivalent.indexOf(editData.equivalent[i])==-1)
+                if (equivalent.indexOf(editData.equivalent[i])==-1)
                     {
                         added.push(editData.equivalent[i]);
                     }                
             }
             //popolamento vettore deleted
             for (var i=0; i<baseData.equivalent.length;i++){
-                if (editData.equivalent.indexOf(baseData.equivalent[i])==-1)
+                if (editData.equivalent.indexOf(baseData.equivalent[i].id)==-1)
                     {
                         deleted.push(baseData.equivalent[i]);
                     }                
             }
         }
         
-        return [added,deleted];
+        return [added,deleted];// added: vettore di id, deleted : vettore di elementi da cancellare( hanno il relativo internal index)
     }
     
     
     getMaxId= function(){
-        var cMax=0,pMax=0;// vettore contenente l'indice massimo delle classi[0] e delle proprietà[1]
+        var max=0;// vettore contenente l'indice massimo delle classi[0] e delle proprietà[1]
         
         for (var i=0; i<parsed.property.length;i++)
-            {
-                if (parsed.property[i].id>pMax)
-                    pMax=parsed.property[i].id;
+            {   var temp=parseInt(parsed.property[i].id);
+                if (temp>max)
+                    max=temp;
                 
             }
         
         for (var i=0; i<parsed.class.length;i++)
             {
-                if (parsed.class[i].id>cMax)
-                    cMax=parsed.class[i].id;
+                temp=parseInt(parsed.class[i].id);
+                if (temp>max)
+                    max=temp;
                 
             }
         
-        return [parseInt(cMax),parseInt(pMax)];
+        return max;
                 
     }
     
     addProperty=function(id,add, type){
     
-    var maxId=getMaxId(),//0 per classi 1 per proprietà
+    var maxId=getMaxId()+1,//0 per classi 1 per proprietà
         property={ id:"", type:""},
         propertyAttribute={ range:"", domain:"", attributes:"", id:"" };
 
 
     if( type=="disjoint"){
         for (var i=0;i<add.length;i++){
-                property.id=maxId[1]++;
+                property.id=maxId.toString();
                 property.type= "owl:disjointWith";
-                propertyAttribute.range=id;
-                propertyAttribute.domain=add[i];
+                propertyAttribute.range=id.toString();
+                propertyAttribute.domain=add[i].toString();
                 propertyAttribute.attributes=[ "object", "anonymous" ];
-                propertyAttribute.id=maxId[1];
+                propertyAttribute.id=maxId.toString();
                 parsed.property.push(property);
                 parsed.propertyAttribute.push(propertyAttribute);
         }
     }
-}
-    //funzione per trovare la posizione all'interno del vettore
-    
-    internalIndex= function(id){
-        
-        
-        
+        if( type=="subclassof"){
+        for (var i=0;i<add.length;i++){
+                property.id=maxId.toString();
+                property.type= "rdfs:SubClassOf";
+                propertyAttribute.range=add[i].toString();
+                propertyAttribute.domain=id.toString();
+                propertyAttribute.attributes=[ "object", "anonymous" ];
+                propertyAttribute.id=maxId.toString();
+                parsed.property.push(property);
+                parsed.propertyAttribute.push(propertyAttribute);
+        }
+    }if( type=="superclass"){
+        for (var i=0;i<add.length;i++){
+                property.id=maxId.toString();
+                property.type= "rdfs:SubClassOf";
+                propertyAttribute.range=id.toString();
+                propertyAttribute.domain=add[i].toString();
+                propertyAttribute.attributes=[ "object", "anonymous" ];
+                propertyAttribute.id=maxId.toString();
+                parsed.property.push(property);
+                parsed.propertyAttribute.push(propertyAttribute);
+        }
     }
- 
+        
+}
+    removeProperty= function(id, del, type){
+        if( type=="disjoint"){ 
+            for(var i=0;i<del.length;i++){            
+                var index= myparser.findPropertyIndex(del[i].id,id,"owl:disjointWith");
+                if (index!=-1){
+                    parsed.property.splice(index,1);
+                    parsed.propertyAttribute.splice(index,1);
+                }
+            }          
+        }else if (type=="subclassof"){ 
+            for(var i=0;i<del.length;i++){            
+                var index= myparser.findPropertyIndex(del[i].id,id,"rdfs:SubClassOf");
+                if (index!=-1){
+                    parsed.property.splice(index,1);
+                    parsed.propertyAttribute.splice(index,1);
+                }
+            }          
+        }else if (type=="superclass"){ 
+            for(var i=0;i<del.length;i++){            
+                var index= myparser.findPropertyIndex(id, del[i].id,"rdfs:SubClassOf");
+                if (index!=-1){
+                    parsed.property.splice(index,1);
+                    parsed.propertyAttribute.splice(index,1);
+                }
+            }          
+        }
+    }
     
     
     myparser.edit= function(data,baseData){
         
     /*
-    data= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:{equivalent:[], added:[], deleted:[]}, superClasses:[]};    
+    data= {id:"", name:"", type:"", comment:"", disjoint:{disjointWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:{equivalent:[], added:[], deleted:[]}, superClasses:[]};    
     */  
         //loadOntologyFromText(JSON.stringify(parsed),"undefined",undefined);
+        var added,deleted;
        var index= myparser.findClassIndex(data.id);//recupero l'indice
-        //nome
+    //nome
         var temp= parsed.classAttribute[index].label[language];        
         
         if (typeof temp=='undefined')
             parsed.classAttribute[index].label["IRI-based"]=data.name;
         else
             parsed.classAttribute[index].label[language] =data.name;   
-        //base-IRI
+    //base-IRI
         parsed.classAttribute[index].iri= parsed.classAttribute[index].baseIri+"#"+data.name;
-       //tipo
-        parsed.class[index].type=data.type;        
+    //tipo
+        parsed.class[index].type=data.type; 
+    //commento
+        if(parsed.classAttribute[index].comment== undefined)
+                parsed.classAttribute[index].comment=[];
         parsed.classAttribute[index].comment[language]=data.comment;
         
-        //superclasse        
-        parsed.classAttribute[index].superClasses= data.superClasses;
+    //superclasse
+        parsed.classAttribute[index].superClasses=data.superClasses;
+        [added,deleted]=getDifference(data,baseData,"superclass");
+        //aggiungo al nodo padre un nuovo figlio(data.id)
         
-        //disjoint
-                //rimozione nodi se ve ne sono
-          var [added,deleted]=getDifference(data,baseData,"disjoint");  
-            addProperty(data.id,added,"disjoint");
-        for(var i=0;i<deleted.lenght;i++){
-            
-            var index= findPropertyIndex(deleted[i],data.id);
-            if (index!=1){
-                parsed.property.splice(index,1);
-                parsed.propertyAttribute.splice(index,1);
-            }
+        for(var i=0; i<added.length;i++){
+            if (parsed.classAttribute[myparser.findClassIndex(added[i])].subClasses==undefined){            
+                parsed.classAttribute[myparser.findClassIndex(added[i])].subClasses=[];
+        }
+            parsed.classAttribute[myparser.findClassIndex(added[i])].subClasses.push(data.id.toString());
         }
         
+        //aggiungo proprietà subclass of al padre
+        addProperty(data.id.toString(), added, "subclassof");
+        //eliminato da classAttribute
+         
+        for (var i=0; i<deleted.length; i++){
+            if (parsed.classAttribute[deleted[i].internalindex].subClasses==undefined){            
+                parsed.classAttribute[deleted[i].internalindex].subClasses=[];
+            }
+            var temp=parsed.classAttribute[myparser.findClassIndex(deleted[i].id)].subClasses;
+            for (var j=0; j<temp.length; j++)
+                if(temp[j]== data.id)                    
+                    parsed.classAttribute[myparser.findClassIndex(deleted[i].id)].subClasses.splice(j,1);
+            }
         
+        removeProperty(data.id.toString(),deleted,"subclassof");   
         
-        //equivalent
+    //disjoint
+        //aggiungiamo proprietà se ve ne sono
+          [added,deleted]=getDifference(data,baseData,"disjoint");  
+            addProperty(data.id.toString(),added,"disjoint");
             //rimozione nodi se ve ne sono
-             parsed.classAttribute[index].equivalent= data.equivalent;
-        //sub class
-            parsed.classAttribute[index].subClasses= data.subClassOf;
+            removeProperty(data.id.toString(), deleted,"disjoint");
+    //equivalent
+            //rimozione nodi se ve ne sono da nodo selezionato
+        var initialLength=parsed.classAttribute[index].equivalent.length;
+        parsed.classAttribute[index].equivalent=data.equivalent;
+        if (data.equivalent.length==0){
+            parsed.class[index].type="owl:Class";
+            if(parsed.classAttribute[index].attributes!=undefined){
+                var ind= parsed.classAttribute[index].attributes.indexOf("equivalent");
+                if (ind!=-1)
+                    {
+                        parsed.classAttribute[index].attributes.splice(ind,1);
+                    }
+            }
+        }else{
+            if(parsed.classAttribute[index].attributes!=undefined){
+                var ind= parsed.classAttribute[index].attributes.indexOf("equivalent");
+                if (ind==-1)
+                    {
+                        parsed.classAttribute[index].attributes.push("equivalent");
+                    }
+            
+        }
+            else 
+                parsed.classAttribute[index].attributes=["equivalent"];
+        }
+                
+        [added,deleted]=getDifference(data,baseData,"equivalent");
+        //se stiamo aggiungendo nodi equivalenti ad un nodo che non ne ha il tipo della classe diventa equivalent class
+        if(initialLength==0 && added.length>0){
+            parsed.class[index].type="owl:equivalentClass";
+            for(var i=0;i<added.length;i++)
+                {
+                    parsed.class[myparser.findClassIndex(added[i])].type="owl:equivalentClass";
+                   if (parsed.classAttribute[myparser.findClassIndex(added[i])].attributes!=undefined){
+                        if (parsed.classAttribute[myparser.findClassIndex(added[i])].attributes.indexOf("equivalent")==-1){
+                            parsed.classAttribute[myparser.findClassIndex(added[i])].attributes.push("equivalent");
+                            
+                        }
+                   }else{
+                       parsed.classAttribute[myparser.findClassIndex(added[i])].attributes=["equivalent"];
+                       
+                   }
+                    if(parsed.classAttribute[myparser.findClassIndex(added[i])].equivalent!=undefined)
+                                parsed.classAttribute[myparser.findClassIndex(added[i])].equivalent=[data.id.toString()];
+                            else
+                                parsed.classAttribute[myparser.findClassIndex(added[i])].equivalent.push(data.id.toString());
+                }
+        }
+        //rimozione dai nodi equivalenti al nodo selezionato del nodo selezionato come equivalente
+        for(var i=0;i<deleted.length;i++)
+        {
+            var ind=parsed.classAttribute[deleted[i].internalindex].equivalent.indexOf(data.id.toString());
+            if(ind!=-1)
+                parsed.classAttribute[deleted[i].internalindex].equivalent.splice(ind,1);
+            //check sul tipo
+           if(parsed.classAttribute[deleted[i].internalindex].equivalent.length==0){
+                parsed.class[deleted[i].internalindex].type="owl:Class";
+               if (parsed.classAttribute[deleted[i].internalindex].attributes!= undefined){ 
+                ind= parsed.classAttribute[deleted[i].internalindex].attributes.indexOf("equivalent");
+                   if (ind!=-1)
+                        {
+                            parsed.classAttribute[deleted[i].internalindex].attributes.splice(ind,1);
+                        }  
+               }
+           }
+        }
+             
+   //sub class
+         
+        parsed.classAttribute[index].subClasses=data.subClassOf;
+        [added,deleted]=getDifference(data,baseData,"subclassof");
+        for(var i=0; i<added.length;i++){
+            if (parsed.classAttribute[myparser.findClassIndex(added[i])].superClasses==undefined){            
+                parsed.classAttribute[myparser.findClassIndex(added[i])].superClasses=[];
+            }
+                parsed.classAttribute[myparser.findClassIndex(added[i])].superClasses.push(data.id.toString());
+        }
+        //aggiungo proprietà subclass of al padre
+        addProperty(data.id.toString(), added, "superclass");
+        //eliminato da classAttribute
+        for (var i=0; i<deleted.length; i++){
+            if (parsed.classAttribute[deleted[i].internalindex].superClasses==undefined){            
+                parsed.classAttribute[deleted[i].internalindex].superClasses=[];
+            }
+            var temp=parsed.classAttribute[myparser.findClassIndex(deleted[i].id)].superClasses;
+            for (var j=0; j<temp.length; j++)
+                if(temp[j]== data.id)                    
+                    parsed.classAttribute[myparser.findClassIndex(deleted[i].id)].superClasses.splice(j,1);
+        }
+        removeProperty(data.id.toString(),deleted,"superclass");
+        
+        
+            
         
         //console.log(JSON.stringify(parsed));  
         _json=JSON.stringify(parsed);
@@ -261,7 +435,7 @@ myparser.start= function(grafo){
         
         
         var index= myparser.findClassIndex(id);
-        var data= { name:"", type:"", comment:"", disjoinWith:[], subClassOf:[], equivalent:[], superClasses:[]};
+        var data= { name:"", type:"", comment:"", disjointWith:[], subClassOf:[], equivalent:[], superClasses:[]};
         //var element={name:"", internalindex:"", id:"", equivalentTo: ""};
         data.name= parsed.classAttribute[index].label[language];
         if (typeof data.name=='undefined')
@@ -284,7 +458,7 @@ myparser.start= function(grafo){
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
                     element.type=parsed.class[myparser.findClassIndex(element.id)].type;
-                    data.disjoinWith.push(element);
+                    data.disjointWith.push(element);
                    
                     
                 }
@@ -296,7 +470,7 @@ myparser.start= function(grafo){
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"]; 
                     element.type=parsed.class[myparser.findClassIndex(element.id)].type;
-                    data.disjoinWith.push(element);
+                    data.disjointWith.push(element);
                    
                     
                 }
@@ -308,7 +482,8 @@ myparser.start= function(grafo){
                 
                 for(var i=0; i<parsed.classAttribute[myparser.findClassIndex(id)].superClasses.length;i++)
                 {   var element={name:"", internalindex:"", id:"", equivalentTo: "", type:""};                 
-                    element.id= parsed.classAttribute[myparser.findClassIndex(id)].superClasses[i];                    
+                    element.id= parsed.classAttribute[myparser.findClassIndex(id)].superClasses[i]; 
+                    element.internalindex=myparser.findClassIndex(id);
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
@@ -327,7 +502,8 @@ myparser.start= function(grafo){
                 
                 for(var i=0; i<parsed.classAttribute[myparser.findClassIndex(id)].subClasses.length;i++)
                 {   var element={name:"", internalindex:"", id:"", equivalentTo: "", type:""};                 
-                    element.id= parsed.classAttribute[myparser.findClassIndex(id)].subClasses[i];                    
+                    element.id= parsed.classAttribute[myparser.findClassIndex(id)].subClasses[i]; 
+                    element.internalindex=myparser.findClassIndex(id);
                     element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                     if (typeof element.name=='undefined')
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
@@ -349,7 +525,7 @@ myparser.start= function(grafo){
             for(var i=0; i<equivalents.length;i++)
                 {       var element={name:"", internalindex:"", id:"", equivalentTo: "",type:""};//oggetto equivalent
                         element.id= equivalents[i];
-                        element.internalindex=i;
+                        element.internalindex=myparser.findClassIndex(element.id);
                         element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
                         if (typeof element.name=='undefined')
                             element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];

@@ -165,7 +165,7 @@ hightlightNode= function(id){
 page.htmlCreator=function(oDomm, insert, node){
     
     //azzero le variabili
-    editData= {id:"", name:"", type:"", comment:"", disjoint:{disjoinWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};
+    editData= {id:"", name:"", type:"", comment:"", disjoint:{disjointWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};
     classArray=[];
     //console.log("lingua selezionata: "+ grafo.language());
     myparser.set_language(grafo.language());
@@ -393,8 +393,8 @@ page.htmlCreator=function(oDomm, insert, node){
         select.onchange=function(){hightlightNode("superclass")};
         //disjoint
         select=oDom.document.getElementById("disjointslc");       
-        for(var i=0; i< data.disjoinWith.length;i++){
-            select.add( new Option(data.disjoinWith[i].name+" : "+ data.disjoinWith[i].type +" : " + data.disjoinWith[i].id));        
+        for(var i=0; i< data.disjointWith.length;i++){
+            select.add( new Option(data.disjointWith[i].name+" : "+ data.disjointWith[i].type +" : " + data.disjointWith[i].id));        
         }
         select.onchange=function(){hightlightNode("disjointslc")};
         //subClass

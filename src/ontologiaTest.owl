@@ -16,30 +16,30 @@
         <Class IRI="#Nonno"/>
     </Declaration>
     <Declaration>
+        <Class IRI="#Francesco"/>
+    </Declaration>
+    <Declaration>
         <Class IRI="#Figlio_2"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Ruta"/>
+        <Class IRI="#Zio"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Figlio_1"/>
     </Declaration>
     <Declaration>
-        <Class IRI="#Ricchione"/>
+        <Class IRI="#Paolo"/>
     </Declaration>
     <Declaration>
         <Class IRI="#Padre"/>
     </Declaration>
-    <Declaration>
-        <Class IRI="#gigolo"/>
-    </Declaration>
     <EquivalentClasses>
         <Class IRI="#Figlio_1"/>
-        <Class IRI="#gigolo"/>
+        <Class IRI="#Paolo"/>
     </EquivalentClasses>
     <EquivalentClasses>
         <Class IRI="#Figlio_2"/>
-        <Class IRI="#Ricchione"/>
+        <Class IRI="#Francesco"/>
     </EquivalentClasses>
     <SubClassOf>
         <Class IRI="#Figlio_1"/>
@@ -47,10 +47,14 @@
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#Figlio_1"/>
-        <Class IRI="#Ruta"/>
+        <Class IRI="#Zio"/>
     </SubClassOf>
     <SubClassOf>
         <Class IRI="#Figlio_2"/>
+        <Class IRI="#Padre"/>
+    </SubClassOf>
+    <SubClassOf>
+        <Class IRI="#Francesco"/>
         <Class IRI="#Padre"/>
     </SubClassOf>
     <SubClassOf>
@@ -58,11 +62,7 @@
         <Class IRI="#Nonno"/>
     </SubClassOf>
     <SubClassOf>
-        <Class IRI="#Ricchione"/>
-        <Class IRI="#Padre"/>
-    </SubClassOf>
-    <SubClassOf>
-        <Class IRI="#gigolo"/>
+        <Class IRI="#Paolo"/>
         <Class IRI="#Padre"/>
     </SubClassOf>
     <DisjointClasses>
@@ -71,12 +71,12 @@
     </DisjointClasses>
     <DisjointClasses>
         <Class IRI="#Figlio_1"/>
-        <Class IRI="#gigolo"/>
+        <Class IRI="#Paolo"/>
     </DisjointClasses>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
         <IRI>#Figlio_1</IRI>
-        <Literal datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">il trombatore di vecchie</Literal>
+        <Literal datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">l&apos;amicone di turno</Literal>
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
@@ -85,8 +85,8 @@
     </AnnotationAssertion>
     <AnnotationAssertion>
         <AnnotationProperty abbreviatedIRI="rdfs:comment"/>
-        <IRI>#Ricchione</IRI>
-        <Literal datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">ricchionazzo</Literal>
+        <IRI>#Francesco</IRI>
+        <Literal datatypeIRI="http://www.w3.org/1999/02/22-rdf-syntax-ns#PlainLiteral">l&apos;antipatico di turno</Literal>
     </AnnotationAssertion>
 </Ontology>
 
