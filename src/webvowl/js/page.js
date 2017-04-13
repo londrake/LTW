@@ -9,15 +9,17 @@ module.exports = function () {
         hSubclasses=[],
         data,
         classArray=[],
-        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]};
+        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]},
+        insert=false;
         
         
 		
 
 
 
-page.initialize=function(g){
+page.initialize=function(g,insertMode){
     grafo=g;
+    insert=insertMode;
     
     
 }
@@ -59,8 +61,14 @@ save=function(){
             editData.equivalent.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
         }    
-    console.log(editData);    
-    _app.updateOntologyFromText(myparser.edit(editData,data),undefined,undefined);
+    console.log(editData); 
+    var mode;
+    if(!insert){
+        mode= myparser.edit(editData,data);
+    }else{
+        mode= myparser.insert(editData);
+    }
+    _app.updateOntologyFromText(mode,undefined,undefined);
     
 }
 //FUNZIONE ADD
@@ -162,10 +170,10 @@ hightlightNode= function(id){
 }
 
 
-page.htmlCreator=function(oDomm, insert, node){
+page.htmlCreator=function(oDomm, node){
     
     //azzero le variabili
-    editData= {id:"", name:"", type:"", comment:"", disjoint:{disjointWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:[], superClasses:[]};
+    editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]};
     classArray=[];
     //console.log("lingua selezionata: "+ grafo.language());
     myparser.set_language(grafo.language());
@@ -190,7 +198,10 @@ page.htmlCreator=function(oDomm, insert, node){
     //id
     span.setAttribute("class", "text");
     span.setAttribute("id", "id");
-    span.innerHTML="id:  "+ node.id();
+    if(!insert)
+        span.innerHTML="id:  "+ node.id();
+    else
+        span.innerHTML="id:  "+ (myparser.getMaxId()+1);
     div.appendChild(span);
     mainDiv.appendChild(div);
     //nome
@@ -373,6 +384,10 @@ page.htmlCreator=function(oDomm, insert, node){
     
     if (insert){
         //inserimento
+        input=oDom.document.getElementById("type");
+        input.value="owl:Class";
+        select=oDom.document.getElementById("superclassslc");
+        select.add( new Option(data.name+" : "+ data.type +" : " + node.id()));
         
     }else{
         //modifica

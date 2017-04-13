@@ -816,14 +816,14 @@ module.exports = function (graphContainerSelector) {
             var stile = "top=center, left=center, width=600, height=220, status=no, menubar=no, toolbar=no scrollbars=no";
            
             var menu = [{
-        name: 'create',
+        name: 'add subClass',
        // img: 'images/create.png',
         title: 'create button',
         fun: function () {            
            var oDom= window.open('../pop.html', "", stile);
                 oDom.onload = function() {
-                page.initialize(graph);                
-                page.htmlCreator(oDom,true,_clickedNode);
+                page.initialize(graph,true);                
+                page.htmlCreator(oDom,_clickedNode);
             };           
         }
     }, {
@@ -832,9 +832,9 @@ module.exports = function (graphContainerSelector) {
         title: 'update button',
         fun: function () {
             var oDom= window.open('../pop.html', "", stile);
-                oDom.onload = function() {
-                page.initialize(graph);
-                page.htmlCreator(oDom,false,_clickedNode);
+                oDom.onload = function() {                 
+                page.initialize(graph,false);
+                page.htmlCreator(oDom,_clickedNode);
             };
         }
     }, {

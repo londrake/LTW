@@ -2,7 +2,9 @@
 module.exports = function () {
 	var myparser = {},
         language,
-        graph;
+        baseIri,
+        graph,        
+        maxId=0;
        
     
     myparser.set_language=function(l){
@@ -15,6 +17,7 @@ module.exports = function () {
 myparser.start= function(grafo){
         graph=grafo;
         parsed=JSON.parse(_json);
+        maxId=0;
 }
     
     myparser.findClassIndex=function(id){
@@ -53,9 +56,79 @@ myparser.start= function(grafo){
 }
     
     myparser.insert =function(data){
+        //inserimento nuovo nodo
+        var _maxId=myparser.getMaxId()+1;
+        maxId=_maxId;
+        parsed.metrics.classCount++;
+        var classe={id:"", type:""},
+            classAttribute={id:"", equivalent:[],iri:"",baseIri:"",istances:0,label:{},comment:{},attributes:[],id:"",superClasses:[],subClasses:[]};
+         classe.id= _maxId.toString();
+         classAttribute.id=classe.id;
+         classe.type="owl:Class";
+        classAttribute.iri=parsed.header.iri+"#"+data.name;
+        classAttribute.baseIri=parsed.header.iri;
+        classAttribute.label[language]=data.name;
+        classAttribute.comment[language]=data.comment;
+    //aggiungo tutti i nodi equivalent
+        if(data.equivalent.length>0){
+            classAttribute.attributes.push("equivalent");
+            classe.type="owl:equivalentClass";
+            classAttribute.equivalent=data.equivalent;
+            //controllo se tutti i nodi presenti in equivalent sian equivalent a loro volta
+            for(var i=0;i<data.equivalent.length;i++)
+                {
+                    parsed.class[myparser.findClassIndex(data.equivalent[i])].type="owl:equivalentClass";
+                   if (parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].attributes!=undefined){
+                        if (parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].attributes.indexOf("equivalent")==-1){
+                            parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].attributes.push("equivalent");
+                            
+                        }
+                   }else{
+                       parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].attributes=["equivalent"];
+                       
+                   }
+                    if(parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].equivalent!=undefined)
+                                parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].equivalent=[classe.id];
+                            else
+                                parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].equivalent.push(classe.id);
+                }
+            }
+        // superclass
+            if (data.superClasses.length>0){
+        //assegno il vettore;
+            classAttribute.superClasses=data.superClasses;
+        // aggiungo l'id del nodo nei nodi padre.
+                for(var i=0; i<data.superClasses.length;i++){
+                
+                    if (parsed.classAttribute[myparser.findClassIndex(data.superClasses[i])].subClasses==undefined){            
+                    parsed.classAttribute[myparser.findClassIndex(data.superClasses[i])].subClasses=[];
+                }
+                    parsed.classAttribute[myparser.findClassIndex(data.superClasses[i])].subClasses.push(classe.id);
+                }
         
-        
-        
+        //aggiungo proprietà subclass of al padre
+            addProperty(classe.id, data.superClasses, "subclassof");
+            }
+        //subclasses
+            if(data.subClassOf.length>0){
+                classAttribute.subClasses=data.subClasses;
+                for(var i=0;i<data.subClassOf.length;i++){
+                    if (parsed.classAttribute[myparser.findClassIndex(data.subClassOf[i])].superClasses==undefined){            
+                    parsed.classAttribute[myparser.findClassIndex(data.subClassOf[i])].superClasses=[];
+                }
+                    parsed.classAttribute[myparser.findClassIndex(data.subClassOf[i])].superClasses.push(classe.id);
+            }
+
+    //aggiungo proprietà subclass of al padre
+            addProperty(classe.id, data.superClasses, "superclass");
+            }
+        //disjoint
+            addProperty(classe.id,data.disjoint,"disjoint");
+            parsed.class.push(classe);
+            parsed.classAttribute.push(classAttribute);        
+            maxId=0;
+        _json=JSON.stringify(parsed);
+       return _json;
     }
     
 
@@ -178,31 +251,30 @@ myparser.start= function(grafo){
     }
     
     
-    getMaxId= function(){
-        var max=0;// vettore contenente l'indice massimo delle classi[0] e delle proprietà[1]
+    myparser.getMaxId= function(){
         
         for (var i=0; i<parsed.property.length;i++)
             {   var temp=parseInt(parsed.property[i].id);
-                if (temp>max)
-                    max=temp;
+                if (temp>maxId)
+                    maxId=temp;
                 
             }
         
         for (var i=0; i<parsed.class.length;i++)
             {
                 temp=parseInt(parsed.class[i].id);
-                if (temp>max)
-                    max=temp;
+                if (temp>maxId)
+                    maxId=temp;
                 
             }
         
-        return max;
+        return maxId;
                 
     }
     
     addProperty=function(id,add, type){
     
-    var maxId=getMaxId()+1,//0 per classi 1 per proprietà
+    var maxId=myparser.getMaxId()+1,//0 per classi 1 per proprietà
         property={ id:"", type:""},
         propertyAttribute={ range:"", domain:"", attributes:"", id:"" };
 
@@ -276,7 +348,7 @@ myparser.start= function(grafo){
     myparser.edit= function(data,baseData){
         
     /*
-    data= {id:"", name:"", type:"", comment:"", disjoint:{disjointWith:[],added:[],deleted:[]}, subClassOf:[], equivalent:{equivalent:[], added:[], deleted:[]}, superClasses:[]};    
+   
     */  
         //loadOntologyFromText(JSON.stringify(parsed),"undefined",undefined);
         var added,deleted;
@@ -333,7 +405,9 @@ myparser.start= function(grafo){
             removeProperty(data.id.toString(), deleted,"disjoint");
     //equivalent
             //rimozione nodi se ve ne sono da nodo selezionato
-        var initialLength=parsed.classAttribute[index].equivalent.length;
+       var initialLength=0;
+        if (parsed.classAttribute[index].equivalent!=undefined)
+             initialLength=parsed.classAttribute[index].equivalent.length;
         parsed.classAttribute[index].equivalent=data.equivalent;
         if (data.equivalent.length==0){
             parsed.class[index].type="owl:Class";
