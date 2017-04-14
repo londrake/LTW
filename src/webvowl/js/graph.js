@@ -822,7 +822,7 @@ module.exports = function (graphContainerSelector) {
         fun: function () {            
            var oDom= window.open('../pop.html', "", stile);
                 oDom.onload = function() {
-                page.initialize(graph,true);                
+                page.initialize(graph,"insert");                
                 page.htmlCreator(oDom,_clickedNode);
             };           
         }
@@ -833,7 +833,7 @@ module.exports = function (graphContainerSelector) {
         fun: function () {
             var oDom= window.open('../pop.html', "", stile);
                 oDom.onload = function() {                 
-                page.initialize(graph,false);
+                page.initialize(graph,"edit");
                 page.htmlCreator(oDom,_clickedNode);
             };
         }
@@ -842,7 +842,11 @@ module.exports = function (graphContainerSelector) {
        // img: 'images/delete.png',
         title: 'delete button',
         fun: function () {
-            //implementa
+            var oDom= window.open('../pop.html', "", stile);
+                oDom.onload = function() {                 
+                page.initialize(graph,"delete");
+                page.htmlCreator(oDom,_clickedNode);
+            };
         }
     }];
  

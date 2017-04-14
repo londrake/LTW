@@ -10,7 +10,8 @@ module.exports = function () {
         data,
         classArray=[],
         editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]},
-        insert=false;
+        insert=false,
+        delMode=false;
         
         
 		
@@ -19,7 +20,18 @@ module.exports = function () {
 
 page.initialize=function(g,insertMode){
     grafo=g;
-    insert=insertMode;
+    if(insertMode=="insert"){
+        insert=true;
+        delMode=false;
+    }
+    else if (insertMode=="delete"){
+        insert=false;
+        delMode=true;
+    }
+    else {
+        insert=false;
+        delMode=false;
+    }
     
     
 }
@@ -136,7 +148,8 @@ add=function(id){
 del=function(id){
     var select= oDom.document.getElementById(id+"slc");
     var selectedId= select.options[select.selectedIndex].text.substring(select.options[select.selectedIndex].text.lastIndexOf(":")+2);// id del nodod selzionato
-    select.remove(select.selectedIndex);    
+    select.remove(select.selectedIndex); 
+    
 }
 
 
@@ -168,7 +181,14 @@ hightlightNode= function(id){
     
     
 }
-
+del_confirm=function(id){
+    var select= oDom.document.getElementById(id+"slc");
+    var selectedId= select.options[select.selectedIndex].text.substring(select.options[select.selectedIndex].text.lastIndexOf(":")+2);// id del nodod selzionato
+    select.remove(select.selectedIndex); 
+    //inizio rimozione del nodo dall'ontologia
+    _app.updateOntologyFromText(myparser.delete(selectedId),undefined,undefined);
+   
+}
 
 page.htmlCreator=function(oDomm, node){
     
@@ -194,6 +214,7 @@ page.htmlCreator=function(oDomm, node){
     var select= oDom.document.createElement("select");
     var add_btn= oDom.document.createElement("input");
     var del_btn=oDom.document.createElement("input");
+    if(!delMode){
     // creazione della pagina popup con gli elementi gestiti e relativi id
     //id
     span.setAttribute("class", "text");
@@ -432,7 +453,32 @@ page.htmlCreator=function(oDomm, node){
         
         
     }
-    
+    }
+    else if(delMode){
+        var div, span, select, confirm_btn;
+        //equivalent
+
+        div =oDom.document.createElement("div");
+        span =oDom.document.createElement("span");
+        span.setAttribute("class", "text");
+        span.innerHTML="Nodes:  ";
+        select= oDom.document.createElement("select");
+        confirm_btn= oDom.document.createElement("input");
+        confirm_btn.setAttribute("value","Confirm");
+        confirm_btn.setAttribute("type", "button");
+        select.setAttribute("id","equivalentslc");
+        confirm_btn.setAttribute("id","equivalentconfirm");
+        confirm_btn.onclick=function(){del_confirm("equivalent")};
+        span.appendChild(select);
+        span.appendChild(confirm_btn);        
+        div.appendChild(span);
+        mainDiv.appendChild(div);
+        select.add( new Option(data.name+" : "+ data.type +" : " + node.id()));
+        for(var i=0; i< data.equivalent.length;i++){
+            select.add( new Option(data.equivalent[i].name+" : "+ data.equivalent[i].type +" : " + data.equivalent[i].id));       
+        }  
+        
+    }
     
     
 }

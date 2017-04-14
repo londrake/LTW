@@ -133,8 +133,46 @@ myparser.start= function(grafo){
     
 
     myparser.delete =function(id){
-        
-        
+        var data=myparser.read(id),
+        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]};
+        for(var i=0;i<data.equivalent.length;i++){
+            editData.equivalent.push(data.equivalent[i].id);
+        }
+        var internalIndex=myparser.findClassIndex(id);
+         parsed.class.splice(internalIndex,1);
+        parsed.classAttribute.splice(internalIndex,1);
+        //elimino tutti i reference diretti all'oggetto che stiamo eliminando
+        var index=-1;
+        for(var i=0;i<parsed.classAttribute.length;i++){
+        //subclass
+            if(parsed.classAttribute[i].subClasses!=undefined){
+                index=parsed.classAttribute[i].subClasses.indexOf(id);
+                if (index!=-1)
+                    parsed.classAttribute[i].subClasses.splice(index,1);
+            }
+        //superclass
+            if(parsed.classAttribute[i].superClasses!=undefined){
+                index=parsed.classAttribute[i].superClasses.indexOf(id);
+                if (index!=-1)
+                    parsed.classAttribute[i].superClasses.splice(index,1);
+            }
+        //equivalent
+            if(parsed.classAttribute[i].equivalent!=undefined){
+                index=parsed.classAttribute[i].equivalent.indexOf(id);
+                if (index!=-1){
+                    parsed.classAttribute[i].equivalent.splice(index,1);
+                    removeEquivalent(i,editData);
+                }
+            }
+        }
+        for(var i=0;i<parsed.property.length;i++){
+            if(parsed.propertyAttribute[i].range==id||parsed.propertyAttribute[i].domain==id){
+                parsed.property.splice(i,1);
+                parsed.propertyAttribute.splice(i,1);
+            }
+        }
+     _json=JSON.stringify(parsed);
+       return _json;
         
     }
     myparser.getClasses= function(id){
@@ -142,7 +180,7 @@ myparser.start= function(grafo){
             
         
         for (var i=0; i< parsed.class.length; i++){
-            if((parsed.class[i].type=="owl:Thing" || parsed.class[i].type=="owl:Class" || parsed.class[i].type== "owl:equivalentClass") && parsed.class[i].id!=id)
+            if((parsed.class[i].type=="owl:Thing" || parsed.class[i].type=="owl:Class" || parsed.class[i].type== "owl:equivalentClass" ||parsed.class[i].type== "owl:equivalentClass" ) && parsed.class[i].id!=id)
             {
                 var item={ id:"", name:"",  type: ""};
                 item.id= parsed.class[i].id;
@@ -344,7 +382,34 @@ myparser.start= function(grafo){
         }
     }
     
-    
+    removeEquivalent=function(index,data){
+        var initialLength=0;        
+        if (parsed.classAttribute[index].equivalent!=undefined)
+             initialLength=parsed.classAttribute[index].equivalent.length;
+        parsed.classAttribute[index].equivalent=data.equivalent;
+        if (data.equivalent.length==0){
+            parsed.class[index].type="owl:Class";
+            if(parsed.classAttribute[index].attributes!=undefined){
+                var ind= parsed.classAttribute[index].attributes.indexOf("equivalent");
+                if (ind!=-1)
+                    {
+                        parsed.classAttribute[index].attributes.splice(ind,1);
+                    }
+            }
+        }else{
+            if(parsed.classAttribute[index].attributes!=undefined){
+                var ind= parsed.classAttribute[index].attributes.indexOf("equivalent");
+                if (ind==-1)
+                    {
+                        parsed.classAttribute[index].attributes.push("equivalent");
+                    }
+            
+        }
+            else 
+                parsed.classAttribute[index].attributes=["equivalent"];
+        }
+        return initialLength;
+    }
     myparser.edit= function(data,baseData){
         
     /*
@@ -405,8 +470,9 @@ myparser.start= function(grafo){
             removeProperty(data.id.toString(), deleted,"disjoint");
     //equivalent
             //rimozione nodi se ve ne sono da nodo selezionato
-       var initialLength=0;
-        if (parsed.classAttribute[index].equivalent!=undefined)
+       
+        var initialLength=removeEquivalent(index,data);        
+        /*if (parsed.classAttribute[index].equivalent!=undefined)
              initialLength=parsed.classAttribute[index].equivalent.length;
         parsed.classAttribute[index].equivalent=data.equivalent;
         if (data.equivalent.length==0){
@@ -429,7 +495,7 @@ myparser.start= function(grafo){
         }
             else 
                 parsed.classAttribute[index].attributes=["equivalent"];
-        }
+        }*/
                 
         [added,deleted]=getDifference(data,baseData,"equivalent");
         //se stiamo aggiungendo nodi equivalenti ad un nodo che non ne ha il tipo della classe diventa equivalent class
