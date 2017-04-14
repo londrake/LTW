@@ -136,6 +136,9 @@ myparser.start= function(grafo){
         var internalIndex=myparser.findClassIndex(id);
          parsed.class.splice(internalIndex,1);
         parsed.classAttribute.splice(internalIndex,1);
+        
+        //decremento il conteggio delle classi
+        parsed.metrics.classCount--;
         //elimino tutti i reference diretti all'oggetto che stiamo eliminando
         var index=-1;
         for(var i=0;i<parsed.classAttribute.length;i++){
@@ -160,11 +163,15 @@ myparser.start= function(grafo){
                 }
             }
         }
+        var propertyIndex=[];
         for(var i=0;i<parsed.property.length;i++){
             if(parsed.propertyAttribute[i].range==id||parsed.propertyAttribute[i].domain==id){
-                parsed.property.splice(i,1);
-                parsed.propertyAttribute.splice(i,1);
+                propertyIndex.push(i);
             }
+        }
+        for(var i=0;i<propertyIndex.length;i++){
+            parsed.property.splice(propertyIndex[propertyIndex.length-1-i],1);
+            parsed.propertyAttribute.splice(propertyIndex[propertyIndex.length-1-i],1);
         }
      _json=JSON.stringify(parsed);
        return _json;
@@ -505,7 +512,7 @@ myparser.start= function(grafo){
                        parsed.classAttribute[myparser.findClassIndex(added[i])].attributes=["equivalent"];
                        
                    }
-                    if(parsed.classAttribute[myparser.findClassIndex(added[i])].equivalent!=undefined)
+                    if(parsed.classAttribute[myparser.findClassIndex(added[i])].equivalent==undefined)
                                 parsed.classAttribute[myparser.findClassIndex(added[i])].equivalent=[data.id.toString()];
                             else
                                 parsed.classAttribute[myparser.findClassIndex(added[i])].equivalent.push(data.id.toString());
