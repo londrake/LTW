@@ -133,11 +133,6 @@ myparser.start= function(grafo){
     
 
     myparser.delete =function(id){
-        var data=myparser.read(id),
-        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]};
-        for(var i=0;i<data.equivalent.length;i++){
-            editData.equivalent.push(data.equivalent[i].id);
-        }
         var internalIndex=myparser.findClassIndex(id);
          parsed.class.splice(internalIndex,1);
         parsed.classAttribute.splice(internalIndex,1);
@@ -161,7 +156,7 @@ myparser.start= function(grafo){
                 index=parsed.classAttribute[i].equivalent.indexOf(id);
                 if (index!=-1){
                     parsed.classAttribute[i].equivalent.splice(index,1);
-                    removeEquivalent(i,editData);
+                    removeEquivalent(i,id);
                 }
             }
         }
@@ -382,12 +377,11 @@ myparser.start= function(grafo){
         }
     }
     
-    removeEquivalent=function(index,data){
-        var initialLength=0;        
+    removeEquivalent=function(index,id){    
         if (parsed.classAttribute[index].equivalent!=undefined)
              initialLength=parsed.classAttribute[index].equivalent.length;
-        parsed.classAttribute[index].equivalent=data.equivalent;
-        if (data.equivalent.length==0){
+        parsed.classAttribute[index].equivalent.splice(parsed.classAttribute[index].equivalent.indexOf(id),1);
+        if (parsed.classAttribute[index].equivalent.length==0){
             parsed.class[index].type="owl:Class";
             if(parsed.classAttribute[index].attributes!=undefined){
                 var ind= parsed.classAttribute[index].attributes.indexOf("equivalent");
@@ -408,7 +402,6 @@ myparser.start= function(grafo){
             else 
                 parsed.classAttribute[index].attributes=["equivalent"];
         }
-        return initialLength;
     }
     myparser.edit= function(data,baseData){
         
@@ -470,9 +463,8 @@ myparser.start= function(grafo){
             removeProperty(data.id.toString(), deleted,"disjoint");
     //equivalent
             //rimozione nodi se ve ne sono da nodo selezionato
-       
-        var initialLength=removeEquivalent(index,data);        
-        /*if (parsed.classAttribute[index].equivalent!=undefined)
+              
+        if (parsed.classAttribute[index].equivalent!=undefined)
              initialLength=parsed.classAttribute[index].equivalent.length;
         parsed.classAttribute[index].equivalent=data.equivalent;
         if (data.equivalent.length==0){
@@ -495,7 +487,7 @@ myparser.start= function(grafo){
         }
             else 
                 parsed.classAttribute[index].attributes=["equivalent"];
-        }*/
+        }
                 
         [added,deleted]=getDifference(data,baseData,"equivalent");
         //se stiamo aggiungendo nodi equivalenti ad un nodo che non ne ha il tipo della classe diventa equivalent class
