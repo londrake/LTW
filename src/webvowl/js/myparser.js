@@ -61,7 +61,7 @@ myparser.start= function(grafo){
         maxId=_maxId;
         parsed.metrics.classCount++;
         var classe={id:"", type:""},
-            classAttribute={id:"", equivalent:[],iri:"",baseIri:"",istances:0,label:{},comment:{},attributes:[],id:"",superClasses:[],subClasses:[]};
+            classAttribute={id:"", equivalent:[],iri:"",baseIri:"",istances:0,label:{},comment:{},attributes:[],id:"",superClasses:[],subClasses:[], union:[]};
          classe.id= _maxId.toString();
          classAttribute.id=classe.id;
          classe.type="owl:Class";
@@ -162,7 +162,60 @@ myparser.start= function(grafo){
                     removeEquivalent(i,id);
                 }
             }
+        //union
+            if(parsed.classAttribute[i].union!=undefined){
+                index=parsed.classAttribute[i].union.indexOf(id);
+                if (index!=-1){
+                    parsed.classAttribute[i].union.splice(index,1);
+                } 
+                if(parsed.classAttribute[i].union.length==0)
+                {
+                    if(parsed.classAttribute[i].attributes!=undefined){
+                        index=parsed.classAttribute[i].attributes.indexOf("union");
+                        if (index!=-1)
+                            parsed.classAttribute[i].attributes.splice(index,1);
+                    }
+                }
+            } 
         }
+         //reparsing per il controllo della consistenza dei tipi
+            for(var i=0;i<parsed.classAttribute.length;i++)
+                {
+                    var equivalentBool=true,unionBool=true;
+                    if(parsed.classAttribute[i].equivalent==undefined)
+                        equivalentBool=false;
+                    if(parsed.classAttribute[i].union==undefined)
+                        unionBool=false;
+                    if(equivalentBool==true&&unionBool==true)
+                        {
+                            if(parsed.classAttribute[i].union.length>0)
+                                parsed.class[i].type="owl:unionOf";
+                            else if(parsed.classAttribute[i].equivalent>0)
+                                parsed.class[i].type="owl:equivalentClass";
+                            else
+                                parsed.class[i].type="owl:Class";
+                        }
+                    else if(equivalentBool==false&&unionBool==true)
+                    {
+                        if(parsed.classAttribute[i].union.length>0)
+                                parsed.class[i].type="owl:unionOf";
+                            else
+                                parsed.class[i].type="owl:Class";
+                    }
+                    else if(equivalentBool==true&&unionBool==false)
+                        {
+                            if(parsed.classAttribute[i].equivalent.length>0)
+                                parsed.class[i].type="owl:equivalentClass";
+                            else
+                                parsed.class[i].type="owl:Class";
+                        }
+                    else
+                    { 
+                        parsed.class[i].type="owl:Class";
+                    }
+                  }
+                    
+                
         var propertyIndex=[];
         for(var i=0;i<parsed.property.length;i++){
             if(parsed.propertyAttribute[i].range==id||parsed.propertyAttribute[i].domain==id){
@@ -389,7 +442,8 @@ myparser.start= function(grafo){
              initialLength=parsed.classAttribute[index].equivalent.length;
         parsed.classAttribute[index].equivalent.splice(parsed.classAttribute[index].equivalent.indexOf(id),1);
         if (parsed.classAttribute[index].equivalent.length==0){
-            parsed.class[index].type="owl:Class";
+            if(parsed.classAttribute[index].union.length==0)
+                parsed.class[index].type="owl:Class";
             if(parsed.classAttribute[index].attributes!=undefined){
                 var ind= parsed.classAttribute[index].attributes.indexOf("equivalent");
                 if (ind!=-1)
@@ -409,13 +463,16 @@ myparser.start= function(grafo){
             else 
                 parsed.classAttribute[index].attributes=["equivalent"];
         }
+        
+        
+        
     }
     myparser.edit= function(data,baseData){
         
     /*
    
     */  
-        //loadOntologyFromText(JSON.stringify(parsed),"undefined",undefined);
+      
         var added,deleted;
        var index= myparser.findClassIndex(data.id);//recupero l'indice
     //nome
@@ -470,7 +527,7 @@ myparser.start= function(grafo){
             removeProperty(data.id.toString(), deleted,"disjoint");
     //equivalent
             //rimozione nodi se ve ne sono da nodo selezionato
-              
+        var initialLength=0;      
         if (parsed.classAttribute[index].equivalent!=undefined)
              initialLength=parsed.classAttribute[index].equivalent.length;
         parsed.classAttribute[index].equivalent=data.equivalent;
@@ -495,11 +552,11 @@ myparser.start= function(grafo){
             else 
                 parsed.classAttribute[index].attributes=["equivalent"];
         }
-                
+        //reverse equivalent property                
         [added,deleted]=getDifference(data,baseData,"equivalent");
         //se stiamo aggiungendo nodi equivalenti ad un nodo che non ne ha il tipo della classe diventa equivalent class
         if(initialLength==0 && added.length>0){
-            parsed.class[index].type="owl:equivalentClass";
+         
             for(var i=0;i<added.length;i++)
                 {
                     parsed.class[myparser.findClassIndex(added[i])].type="owl:equivalentClass";
@@ -536,6 +593,42 @@ myparser.start= function(grafo){
                }
            }
         }
+        
+        //union
+        initialLength=0;
+        if (parsed.classAttribute[index].union!=undefined)
+             initialLength=parsed.classAttribute[index].union.length;
+        parsed.classAttribute[index].union=data.union;
+        if (data.union.length==0){
+            
+            if(parsed.classAttribute[index].attributes!=undefined){
+                var ind= parsed.classAttribute[index].attributes.indexOf("union");
+                if (ind!=-1)
+                    {
+                        parsed.classAttribute[index].attributes.splice(ind,1);
+                    }
+            }
+        }else{
+            if(parsed.classAttribute[index].attributes!=undefined){
+                var ind= parsed.classAttribute[index].attributes.indexOf("union");
+                if (ind==-1)
+                    {
+                        parsed.classAttribute[index].attributes.push("union");
+                    }
+            
+        }
+            else 
+                parsed.classAttribute[index].attributes=["union"];
+        }
+        
+        //check sul tipo in base ai dati inseriti. Viene forzato il tipo più idoneo.
+        if(parsed.classAttribute[index].equivalent.length>0&&parsed.classAttribute[index].union.length==0)
+            parsed.class[index].type="owl:equivalentClass";
+        else if(parsed.classAttribute[index].union.length>0)
+            parsed.class[index].type="owl:unionOf";
+        else
+            parsed.class[index].type="owl:Class";
+        
              
    //sub class
          
@@ -574,7 +667,7 @@ myparser.start= function(grafo){
         
         
         var index= myparser.findClassIndex(id);
-        var data= { name:"", type:"", comment:"", disjointWith:[], subClassOf:[], equivalent:[], superClasses:[]};
+        var data= { name:"", type:"", comment:"", disjointWith:[], subClassOf:[], equivalent:[], superClasses:[], union:[]};
         //var element={name:"", internalindex:"", id:"", equivalentTo: ""};
         data.name= parsed.classAttribute[index].label[language];
         if (typeof data.name=='undefined')
@@ -649,10 +742,24 @@ myparser.start= function(grafo){
                     element.type=parsed.class[myparser.findClassIndex(element.id)].type;
                     data.subClassOf.push(element);                   
                 
-                }                
-                
-                
-                
+                }
+            }
+        //Union
+        if (typeof parsed.classAttribute[myparser.findClassIndex(id)].union != 'undefined'){
+             var union= parsed.classAttribute[myparser.findClassIndex(id)].union;
+             
+            for(var i=0; i<union.length;i++)
+                {       var element={name:"", internalindex:"", id:"", equivalentTo: "",type:"", union:""};//oggetto equivalent
+                        element.id= union[i];
+                        element.internalindex=myparser.findClassIndex(element.id);
+                        element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label[language];
+                        if (typeof element.name=='undefined')
+                            element.name= parsed.classAttribute[myparser.findClassIndex(element.id)].label["IRI-based"];
+                        element.type=parsed.class[myparser.findClassIndex(element.id)].type;
+                        data.union.push(element);
+
+                    
+                }
             }
         
         

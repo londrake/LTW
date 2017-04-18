@@ -875,6 +875,8 @@ module.exports = function (graphContainerSelector) {
         
 		labelGroupElements.selectAll(".label").on("click", function (clickedProperty) {
 			executeModules(clickedProperty);
+            
+            
 		});
 	}
 

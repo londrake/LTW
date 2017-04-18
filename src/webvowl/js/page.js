@@ -9,12 +9,12 @@ module.exports = function () {
         hSubclasses=[],
         data,
         classArray=[],
-        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]},
+        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[], union:[]},
         insert=false,
         delMode=false;
         
         
-		
+		//vado un secondo al bagno
 
 
 
@@ -72,7 +72,15 @@ save=function(){
         {
             editData.equivalent.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
             
-        }    
+        }
+    select=oDom.document.getElementById("unionslc");
+    editData.union=[];
+     for (var i=0; i<select.options.length; i++)
+        {
+            editData.union.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+            
+        }
+   
     console.log(editData); 
     var mode;
     if(!insert){
@@ -365,7 +373,35 @@ page.htmlCreator=function(oDomm, node){
     span.appendChild(del_btn);
     span.appendChild(select);
     div.appendChild(span);
-    mainDiv.appendChild(div);
+    mainDiv.appendChild(div);        
+    //Union
+    div =oDom.document.createElement("div");
+    span =oDom.document.createElement("span");
+    span.setAttribute("class", "text");
+    span.innerHTML="Union:  ";
+    select= oDom.document.createElement("select");
+    add_btn= oDom.document.createElement("input");
+    del_btn=oDom.document.createElement("input");
+    add_btn.setAttribute("value","ADD");
+    del_btn.setAttribute("value", "DELETE");
+    add_btn.setAttribute("type", "button");
+    del_btn.setAttribute("type", "button");
+    select.setAttribute("id","unionslc");
+    add_btn.setAttribute("id","unionadd");
+    add_btn.onclick=function(){add("union")};
+    del_btn.onclick=function(){del("union")};
+    del_btn.setAttribute("id", "uniondel");
+    input =oDom.document.createElement("input");
+    input.setAttribute("id","union");
+    input.setAttribute("list", "classList");
+    input.setAttribute("class", "stile");
+    input.onchange=function(){hightlightNode("union")};
+    span.appendChild(input);
+    span.appendChild(add_btn);
+    span.appendChild(del_btn);
+    span.appendChild(select);
+    div.appendChild(span);
+    mainDiv.appendChild(div);        
     //bottone salva
     div =oDom.document.createElement("div");
     span =oDom.document.createElement("span");
@@ -446,6 +482,13 @@ page.htmlCreator=function(oDomm, node){
             select.add( new Option(data.equivalent[i].name+" : "+ data.equivalent[i].type +" : " + data.equivalent[i].id));       
         }  
         select.onchange=function(){hightlightNode("equivalentslc")};
+        //UNION
+        select=oDom.document.getElementById("unionslc");
+        
+        for(var i=0; i< data.union.length;i++){
+            select.add( new Option(data.union[i].name+" : "+ data.union[i].type +" : " + data.union[i].id));       
+        }  
+        select.onchange=function(){hightlightNode("unionslc")};
         
         
         
