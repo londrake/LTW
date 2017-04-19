@@ -813,7 +813,8 @@ module.exports = function (graphContainerSelector) {
         
         //Script menu contestuale tasto destro ADD
         function myContextMenu(){
-            var stile = "top=center, left=center, width=600, height=220, status=no, menubar=no, toolbar=no scrollbars=no";
+            var stile = "top=center, left=center, width=600, height=220, status=no, menubar=no, toolbar=no scrollbars=no",
+                stileDel="top=center, left=center, width=350, height=70, status=no, menubar=no, toolbar=no scrollbars=no";
            
             var menu = [{
         name: 'add subClass',
@@ -823,8 +824,8 @@ module.exports = function (graphContainerSelector) {
            var oDom= window.open('../pop.html', "", stile);
                 oDom.onload = function() {
                 page.initialize(graph,"insert");                
-                page.htmlCreator(oDom,_clickedNode);
-            };           
+                page.htmlCreator(oDom,_clickedNode.id());
+            };    
         }
     }, {
         name: 'edit',
@@ -834,19 +835,21 @@ module.exports = function (graphContainerSelector) {
             var oDom= window.open('../pop.html', "", stile);
                 oDom.onload = function() {                 
                 page.initialize(graph,"edit");
-                page.htmlCreator(oDom,_clickedNode);
+                page.htmlCreator(oDom,_clickedNode.id());
             };
+
         }
     }, {
         name: 'delete',
        // img: 'images/delete.png',
         title: 'delete button',
         fun: function () {
-            var oDom= window.open('../pop.html', "", stile);
+            var oDom= window.open('../pop.html', "",  stileDel);
                 oDom.onload = function() {                 
                 page.initialize(graph,"delete");
-                page.htmlCreator(oDom,_clickedNode);
+                page.htmlCreator(oDom,_clickedNode.id());
             };
+
         }
     }];
  
@@ -879,6 +882,10 @@ module.exports = function (graphContainerSelector) {
             
 		});
 	}
+    //ADD chiude la finestra aperta
+    graph.windowClose=function(){
+        self.close();
+    }
 
 	function generateDictionary(data){
 		var i;

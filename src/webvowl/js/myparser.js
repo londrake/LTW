@@ -87,7 +87,7 @@ myparser.start= function(grafo){
                        parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].attributes=["equivalent"];
                        
                    }
-                    if(parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].equivalent!=undefined)
+                    if(parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].equivalent==undefined)
                                 parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].equivalent=[classe.id];
                             else
                                 parsed.classAttribute[myparser.findClassIndex(data.equivalent[i])].equivalent.push(classe.id);
@@ -111,22 +111,28 @@ myparser.start= function(grafo){
             }
         //subclasses
             if(data.subClassOf.length>0){
-                classAttribute.subClasses=data.subClasses;
+                classAttribute.subClasses=data.subClassOf;
                 for(var i=0;i<data.subClassOf.length;i++){
                     if (parsed.classAttribute[myparser.findClassIndex(data.subClassOf[i])].superClasses==undefined){            
                     parsed.classAttribute[myparser.findClassIndex(data.subClassOf[i])].superClasses=[];
                 }
                     parsed.classAttribute[myparser.findClassIndex(data.subClassOf[i])].superClasses.push(classe.id);
             }
-
-    //aggiungo proprietà subclass of al padre
-            addProperty(classe.id, data.superClasses, "superclass");
+        //aggiungo proprietà subclass of al padre
+            addProperty(classe.id, data.subClassOf, "superclass");
+            }
+        //union
+            if (data.union.length>0){
+                classAttribute.union=data.union;
+                classAttribute.attributes.push("union");
+                classe.type="owl:unionOf";
             }
         //disjoint
             addProperty(classe.id,data.disjoint,"disjoint");
             parsed.class.push(classe);
             parsed.classAttribute.push(classAttribute);        
             maxId=0;
+   
         _json=JSON.stringify(parsed);
        return _json;
     }
@@ -178,7 +184,25 @@ myparser.start= function(grafo){
                 }
             } 
         }
-         //reparsing per il controllo della consistenza dei tipi
+         typeReparsing();
+                    
+                
+        var propertyIndex=[];
+        for(var i=0;i<parsed.property.length;i++){
+            if(parsed.propertyAttribute[i].range==id||parsed.propertyAttribute[i].domain==id){
+                propertyIndex.push(i);
+            }
+        }
+        for(var i=0;i<propertyIndex.length;i++){
+            parsed.property.splice(propertyIndex[propertyIndex.length-1-i],1);
+            parsed.propertyAttribute.splice(propertyIndex[propertyIndex.length-1-i],1);
+        }
+     _json=JSON.stringify(parsed);
+       return _json;
+        
+    }
+    typeReparsing=function(){
+        //reparsing per il controllo della consistenza dei tipi
             for(var i=0;i<parsed.classAttribute.length;i++)
                 {
                     var equivalentBool=true,unionBool=true;
@@ -214,30 +238,15 @@ myparser.start= function(grafo){
                         parsed.class[i].type="owl:Class";
                     }
                   }
-                    
-                
-        var propertyIndex=[];
-        for(var i=0;i<parsed.property.length;i++){
-            if(parsed.propertyAttribute[i].range==id||parsed.propertyAttribute[i].domain==id){
-                propertyIndex.push(i);
-            }
-        }
-        for(var i=0;i<propertyIndex.length;i++){
-            parsed.property.splice(propertyIndex[propertyIndex.length-1-i],1);
-            parsed.propertyAttribute.splice(propertyIndex[propertyIndex.length-1-i],1);
-        }
-     _json=JSON.stringify(parsed);
-       return _json;
-        
     }
-    myparser.getClasses= function(id){
+    myparser.getClasses= function(id,insert){
         var array=[];
-            
+        var item;    
         
         for (var i=0; i< parsed.class.length; i++){
-            if((parsed.class[i].type=="owl:Thing" || parsed.class[i].type=="owl:Class" || parsed.class[i].type== "owl:equivalentClass" ||parsed.class[i].type== "owl:equivalentClass" ) && parsed.class[i].id!=id)
+            if((parsed.class[i].type=="owl:Thing" || parsed.class[i].type=="owl:Class" || parsed.class[i].type== "owl:equivalentClass" ||parsed.class[i].type== "owl:unionOf" ) && parsed.class[i].id!=id)
             {
-                var item={ id:"", name:"",  type: ""};
+                item={ id:"", name:"",  type: ""}; 
                 item.id= parsed.class[i].id;
                 item.type=parsed.class[i].type;
                 item.name=parsed.classAttribute[i].label[language];
@@ -245,9 +254,21 @@ myparser.start= function(grafo){
                     item.name= parsed.classAttribute[i].label["IRI-based"];
                 
                 array.push(item);
-            }
+            }   
                 
         }
+        if(insert)
+            {
+                item={ id:"", name:"",  type: ""}; 
+                item.id= parsed.class[myparser.findClassIndex(id)].id;
+                item.type=parsed.class[myparser.findClassIndex(id)].type;
+                item.name=parsed.classAttribute[myparser.findClassIndex(id)].label[language];
+                if (typeof item.name=='undefined')
+                    item.name= parsed.classAttribute[myparser.findClassIndex(id)].label["IRI-based"];
+                
+                array.push(item);
+                
+            }
         return array;        
         
     }
@@ -367,13 +388,16 @@ myparser.start= function(grafo){
     
     addProperty=function(id,add, type){
     
-    var maxId=myparser.getMaxId()+1,//0 per classi 1 per proprietà
+        var maxId=parseInt(myparser.getMaxId()),
         property={ id:"", type:""},
         propertyAttribute={ range:"", domain:"", attributes:"", id:"" };
 
 
     if( type=="disjoint"){
         for (var i=0;i<add.length;i++){
+                property={ id:"", type:""},
+                propertyAttribute={ range:"", domain:"", attributes:"", id:"" };
+                maxId++;
                 property.id=maxId.toString();
                 property.type= "owl:disjointWith";
                 propertyAttribute.range=id.toString();
@@ -386,6 +410,9 @@ myparser.start= function(grafo){
     }
         if( type=="subclassof"){
         for (var i=0;i<add.length;i++){
+                property={ id:"", type:""},
+                propertyAttribute={ range:"", domain:"", attributes:"", id:"" };
+                maxId++;
                 property.id=maxId.toString();
                 property.type= "rdfs:SubClassOf";
                 propertyAttribute.range=add[i].toString();
@@ -397,6 +424,9 @@ myparser.start= function(grafo){
         }
     }if( type=="superclass"){
         for (var i=0;i<add.length;i++){
+                property={ id:"", type:""},
+                propertyAttribute={ range:"", domain:"", attributes:"", id:"" };
+                maxId++;
                 property.id=maxId.toString();
                 property.type= "rdfs:SubClassOf";
                 propertyAttribute.range=id.toString();
@@ -621,14 +651,6 @@ myparser.start= function(grafo){
                 parsed.classAttribute[index].attributes=["union"];
         }
         
-        //check sul tipo in base ai dati inseriti. Viene forzato il tipo più idoneo.
-        if(parsed.classAttribute[index].equivalent.length>0&&parsed.classAttribute[index].union.length==0)
-            parsed.class[index].type="owl:equivalentClass";
-        else if(parsed.classAttribute[index].union.length>0)
-            parsed.class[index].type="owl:unionOf";
-        else
-            parsed.class[index].type="owl:Class";
-        
              
    //sub class
          
@@ -653,6 +675,7 @@ myparser.start= function(grafo){
                     parsed.classAttribute[myparser.findClassIndex(deleted[i].id)].superClasses.splice(j,1);
         }
         removeProperty(data.id.toString(),deleted,"superclass");
+        typeReparsing();
         
         
             

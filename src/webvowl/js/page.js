@@ -13,9 +13,7 @@ module.exports = function () {
         insert=false,
         delMode=false;
         
-        
-		//vado un secondo al bagno
-
+       
 
 
 page.initialize=function(g,insertMode){
@@ -81,7 +79,7 @@ save=function(){
             
         }
    
-    console.log(editData); 
+   // console.log(editData); 
     var mode;
     if(!insert){
         mode= myparser.edit(editData,data);
@@ -89,6 +87,7 @@ save=function(){
         mode= myparser.insert(editData);
     }
     _app.updateOntologyFromText(mode,undefined,undefined);
+    oDom.close();
     
 }
 //FUNZIONE ADD
@@ -147,10 +146,6 @@ add=function(id){
             message.innerHTML="ERRORE: NON PUOI AGGIUNGERE UN NODO NON ESISTENTE, LO DEVI PRIMA CREARE.";
 
         }
-    
-        
-    
-    
 }
 //FUNZIONE DEL
 del=function(id){
@@ -195,10 +190,11 @@ del_confirm=function(id){
     select.remove(select.selectedIndex); 
     //inizio rimozione del nodo dall'ontologia
     _app.updateOntologyFromText(myparser.delete(selectedId),undefined,undefined);
+    oDom.close();
    
 }
 
-page.htmlCreator=function(oDomm, node){
+page.htmlCreator=function(oDomm, id){
     
     //azzero le variabili
     editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[]};
@@ -206,8 +202,8 @@ page.htmlCreator=function(oDomm, node){
     //console.log("lingua selezionata: "+ grafo.language());
     myparser.set_language(grafo.language());
     myparser.start(grafo);
-    data=myparser.read(node.id());
-    var classesArray=myparser.getClasses(node.id());
+    data=myparser.read(id);
+    var classesArray=myparser.getClasses(id,insert);
     
     oDom=oDomm;
     
@@ -224,11 +220,26 @@ page.htmlCreator=function(oDomm, node){
     var del_btn=oDom.document.createElement("input");
     if(!delMode){
     // creazione della pagina popup con gli elementi gestiti e relativi id
+    span.setAttribute("class", "text");
+    span.innerHTML="Node:  ";    
+    select.setAttribute("id","nodeslc");
+    span.appendChild(select);    
+    div.appendChild(span);        
+    mainDiv.appendChild(div);
+    if (insert==false && data.equivalent.length>0)
+        {
+            span.style.visibility = 'visible';
+            select.add( new Option(data.name+" : "+ data.type +" : " + id));
+        }
+        else
+            span.style.visibility='hidden';
     //id
+    div =oDom.document.createElement("div");
+    span =oDom.document.createElement("span");
     span.setAttribute("class", "text");
     span.setAttribute("id", "id");
     if(!insert)
-        span.innerHTML="id:  "+ node.id();
+        span.innerHTML="id:  "+ id;
     else
         span.innerHTML="id:  "+ (myparser.getMaxId()+1);
     div.appendChild(span);
@@ -268,6 +279,7 @@ page.htmlCreator=function(oDomm, node){
     //disjoin
     div =oDom.document.createElement("div");
     span =oDom.document.createElement("span");
+    select= oDom.document.createElement("select");    
     span.setAttribute("class", "text");
     span.innerHTML="Disjoint:  ";
     select.setAttribute("id","disjointslc");
@@ -444,19 +456,18 @@ page.htmlCreator=function(oDomm, node){
         input=oDom.document.getElementById("type");
         input.value="owl:Class";
         select=oDom.document.getElementById("superclassslc");
-        select.add( new Option(data.name+" : "+ data.type +" : " + node.id()));
+        select.add( new Option(data.name+" : "+ data.type +" : " + id));
         
     }else{
         //modifica
-        
-        
         input=oDom.document.getElementById("name");
         input.value=data.name;
         input=oDom.document.getElementById("type");
         input.value=data.type;
         input=oDom.document.getElementById("comment");
         input.value=data.comment;         
-        input=oDom.document.getElementById("superclass");               
+        input=oDom.document.getElementById("superclass");  
+        
         //superclass        
         select=oDom.document.getElementById("superclassslc");       
         for(var i=0; i< data.superClasses.length;i++){
@@ -477,11 +488,22 @@ page.htmlCreator=function(oDomm, node){
         select.onchange=function(){hightlightNode("subclassesslc")};
         //equivalent
         select=oDom.document.getElementById("equivalentslc");
-        
+        selectNode=oDom.document.getElementById("nodeslc");
         for(var i=0; i< data.equivalent.length;i++){
-            select.add( new Option(data.equivalent[i].name+" : "+ data.equivalent[i].type +" : " + data.equivalent[i].id));       
+            select.add( new Option(data.equivalent[i].name+" : "+ data.equivalent[i].type +" : " + data.equivalent[i].id)); 
+            selectNode.add( new Option(data.equivalent[i].name+" : "+ data.equivalent[i].type +" : " + data.equivalent[i].id));
+            
         }  
-        select.onchange=function(){hightlightNode("equivalentslc")};
+        selectNode.onchange=function(){
+            var stile = "top=center, left=center, width=600, height=220, status=no, menubar=no, toolbar=no scrollbars=no";
+            var newPage= window.open('../pop.html', "", stile);
+                newPage.onload = function() {
+            string = selectNode.options[selectNode.selectedIndex].text;
+            page.initialize(grafo,"edit");
+            page.htmlCreator(newPage,string.substring(string.lastIndexOf(":")+2));
+            oDomm.close();
+            }
+        };
         //UNION
         select=oDom.document.getElementById("unionslc");
         
@@ -489,12 +511,6 @@ page.htmlCreator=function(oDomm, node){
             select.add( new Option(data.union[i].name+" : "+ data.union[i].type +" : " + data.union[i].id));       
         }  
         select.onchange=function(){hightlightNode("unionslc")};
-        
-        
-        
-                
-        
-        
     }
     }
     else if(delMode){
@@ -516,7 +532,7 @@ page.htmlCreator=function(oDomm, node){
         span.appendChild(confirm_btn);        
         div.appendChild(span);
         mainDiv.appendChild(div);
-        select.add( new Option(data.name+" : "+ data.type +" : " + node.id()));
+        select.add( new Option(data.name+" : "+ data.type +" : " + id));
         for(var i=0; i< data.equivalent.length;i++){
             select.add( new Option(data.equivalent[i].name+" : "+ data.equivalent[i].type +" : " + data.equivalent[i].id));       
         }  
