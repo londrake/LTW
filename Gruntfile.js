@@ -66,14 +66,14 @@ module.exports = function (grunt) {
 			dependencies: {
 				files: [
 					{expand: true, cwd: "node_modules/d3/", src: ["d3.min.js"], dest: deployPath + "/js/"},
-                    {expand: true, cwd: "src/js/", src: "*.js", dest: deployPath + "/js/"}
+                    {expand: true, cwd: "src/js/", src: "*.js", dest: deployPath + "/js/"}//aggiunta js esterni
                     ]
 			},
 			static: {
 				files: [
 					{expand: true, cwd: "src/", src: ["favicon.ico"], dest: deployPath},
-					{expand: true, cwd: "src/css/", src: "*.css", dest: deployPath+"/css/"},
-                    {expand: true, cwd: "src/", src: "pop.html", dest: deployPath}
+					{expand: true, cwd: "src/css/", src: "*.css", dest: deployPath+"/css/"},//aggiunta css esterni
+                    {expand: true, cwd: "src/", src: "pop.html", dest: deployPath}// aggiunta pagina pop.html
 				]
 			}
 		},

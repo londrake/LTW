@@ -94,7 +94,7 @@ module.exports = function () {
 			var validJSON;
 			try {
 				data =JSON.parse(jsonText);
-                _json=jsonText;//ADD json text caricato
+                _json=jsonText;//ADD json text caricato al momento
                 
 				validJSON=true;
 			} catch (e){
@@ -139,7 +139,7 @@ module.exports = function () {
 		exportMenu.setFilename(filename);
 	}
     
-    //COPIA ESTERNA DELLA FUNZIONE LOAD ONTOLOGY
+    //ADD COPIA RICHIAMABILE IN PAGE.JS DELLA FUNZIONE LOAD ONTOLOGY
     app.updateOntologyFromText=function(jsonText, filename, alternativeFilename) {
 		pauseMenu.reset();
 
@@ -154,9 +154,7 @@ module.exports = function () {
 			var validJSON;
 			try {
 				data =JSON.parse(jsonText);
-                parsed=data;//ADD 
-                _app=app;
-				validJSON=true;
+                validJSON=true;
 			} catch (e){
 				validJSON=false;
 			}
@@ -214,6 +212,6 @@ module.exports = function () {
 		graph.updateStyle();
 		navigationMenu.updateVisibilityStatus();
 	}
-    _app=app;//ADD
+    _app=app;//ADD copia dell'istanza app, istanziata per via degli import ciclici.Usata per il metodo loadOntologyFromText 
 	return app;
 };

@@ -212,15 +212,12 @@ module.exports = function (graph) {
 
 		// Collect the annotations in an array for simpler processing
 		var annotations = [];
-        console.log("PRINT\n");
-		for (var annotation in annotationObject) {
+        for (var annotation in annotationObject) {
 			if (annotationObject.hasOwnProperty(annotation)) {
 				annotations.push(annotationObject[annotation][0]);
-                
-             //   console.log(annotations.push(annotationObject[annotation][0]));
-			}
+            }
 		}
-        console.log();
+        
 
 		container.selectAll(".annotation").remove();
 		container.selectAll(".annotation").data(annotations).enter().append("p")
@@ -259,12 +256,7 @@ module.exports = function (graph) {
 			displayPropertyInformation(selectedElement);
 		} else if (elementTools.isNode(selectedElement)) {
 			displayNodeInformation(selectedElement);
-            console.log("prova log dati");
-            console.log(selectedElement.iri());
-            console.log(selectedElement.type());
-            console.log(selectedElement.commentForCurrentLanguage());
-            
-		}
+        }
 	};
 
 	function showSelectionAdvice() {
@@ -421,8 +413,6 @@ module.exports = function (graph) {
 
 		setTextAndVisibility(d3.select("#nodeDescription"), node.descriptionForCurrentLanguage());
 		setTextAndVisibility(d3.select("#nodeComment"), node.commentForCurrentLanguage());
-        console.log("STAMPA node annotation  " );
-        console.log( node.annotations());
 		listAnnotations(d3.select("#classSelectionInformation"), node.annotations());
 	}
 

@@ -1,8 +1,4 @@
 var unescape = require("lodash/unescape");
-//var global.file_path;// contiene il file path dell'ontologia(IRI, JSON) ADD
-
-
-
 /**
  * Contains the logic for the ontology listing and conversion.
  *
@@ -118,8 +114,6 @@ module.exports = function (graph) {
 
 		if (hashParameter.substr(0, fileKey.length) === fileKey) {
 			var filename = decodeURIComponent(hashParameter.slice(fileKey.length));
-            console.log("Il file si trova: ");            
-            file_path=filename;//ADD
             loadOntologyFromFile(filename);
 
 			
@@ -137,9 +131,6 @@ module.exports = function (graph) {
 		} else {
 			// id of an existing ontology as parameter
 			loadOntologyFromUri("data/" + hashParameter + ".json", hashParameter);
-            console.log("Il file si trova: ");            
-            file_path="data/" + hashParameter + ".json";//ADD
-
 			ontologyOptions.each(function () {
 				var ontologyOption = d3.select(this);
 				if (ontologyOption.select("a").size() > 0) {
@@ -208,10 +199,6 @@ module.exports = function (graph) {
 	}
 
 	function loadOntologyFromUri(relativePath, requestedUri) {
-        file_path=relativePath;
-        console.log("Il file si trova: ");
-        console.log(relativePath);
-        console.log(requestedUri);
 		fileToLoad=requestedUri;
 		var cachedOntology = cachedConversions[relativePath];
 		var trimmedRequestedUri = requestedUri.replace(/\/$/g, "");

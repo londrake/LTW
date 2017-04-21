@@ -193,11 +193,10 @@
     </script>
     <script>
         var Mouse = {x:null, y:null};
-        var mynode, file_path,my,_app,_json,parsed;
+        var _app,_json;
 
         $(document).on({
             "contextmenu": function(e) {
-                console.log("ctx menu button:", e); 
              Mouse.x=e.screenX;
              Mouse.y=e.screenY;
                 // Stop the context menu

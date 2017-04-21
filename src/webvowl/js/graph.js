@@ -53,7 +53,7 @@ module.exports = function (graphContainerSelector) {
 		nodeMap = [],
         locationId = 0,
 		zoom,
-        _clickedNode=null;
+        _clickedNode=null;//ADD nodo del grafo selezionato sulla UI
 
 	/**
 	 * Recalculates the positions of nodes, links, ... and updates them.
@@ -803,22 +803,16 @@ module.exports = function (graphContainerSelector) {
         
 
 		nodeElements.on("click", function (clickedNode) {
-            console.log("Clicked node: " + clickedNode);
-            console.log( clickedNode.label()[0]);
-            console.log(clickedNode.labelForCurrentLanguage());
-            console.log(clickedNode.id());
-            console.log(clickedNode.iri());
 			executeModules(clickedNode);
 		});
         
-        //Script menu contestuale tasto destro ADD
+        //ADD Script menu contestuale tasto destro 
         function myContextMenu(){
             var stile = "top=center, left=center, width=600, height=220, status=no, menubar=no, toolbar=no scrollbars=no",
                 stileDel="top=center, left=center, width=350, height=70, status=no, menubar=no, toolbar=no scrollbars=no";
            
             var menu = [{
         name: 'add subClass',
-       // img: 'images/create.png',
         title: 'create button',
         fun: function () {            
            var oDom= window.open('../pop.html', "", stile);
@@ -829,7 +823,6 @@ module.exports = function (graphContainerSelector) {
         }
     }, {
         name: 'edit',
-       // img: 'images/update.png',
         title: 'update button',
         fun: function () {
             var oDom= window.open('../pop.html', "", stile);
@@ -841,7 +834,6 @@ module.exports = function (graphContainerSelector) {
         }
     }, {
         name: 'delete',
-       // img: 'images/delete.png',
         title: 'delete button',
         fun: function () {
             var oDom= window.open('../pop.html', "",  stileDel);
@@ -856,36 +848,17 @@ module.exports = function (graphContainerSelector) {
 //Calling context menu
  $('#'+_clickedNode.id()).contextMenu(menu);
  $('#'+ _clickedNode.id()).contextMenu("open",{top:(Mouse.y),left:(Mouse.x)});
-            
-            
-            
         }
-        
-        
-        
-        
+//ADD aggiunta listner click tasto dx sul nodo selezionato del grafo
         nodeElements.on("contextmenu", function(clickedNode){ 
-            //graph.start(); // funzione che re-parsa il file JSON e disegna il grafo. da richiamare dopo edit(scrittura file nuovo)
-            _clickedNode=clickedNode;
-            mynode=clickedNode;
-            myContextMenu();
+            _clickedNode=clickedNode; //ADD           
+            myContextMenu();//ADD
             executeModules(clickedNode);
-            
-            
-            return false;           
-            },false);
-        
-        
-		labelGroupElements.selectAll(".label").on("click", function (clickedProperty) {
+        },false);
+        labelGroupElements.selectAll(".label").on("click", function (clickedProperty) {
 			executeModules(clickedProperty);
-            
-            
-		});
+        });
 	}
-    //ADD chiude la finestra aperta
-    graph.windowClose=function(){
-        self.close();
-    }
 
 	function generateDictionary(data){
 		var i;
@@ -896,10 +869,7 @@ module.exports = function (graphContainerSelector) {
 			// check if node has a label
 			if (nodes[i].labelForCurrentLanguage()!==undefined)
 				originalDictionary.push(nodes[i])
-                
-                console.log("NODES["+i+"] ");
-                console.log(nodes[i].id());
-		}
+              }
 		
 		for (i = 0; i < props.length; i++) {
 			if (props[i].labelForCurrentLanguage()!==undefined)

@@ -157,8 +157,7 @@ module.exports = function (graph) {
 	 * @return {Array} the preprocessed nodes
 	 */
 	parser.nodes = function () {
-		console.log(nodes);
-        return nodes;
+		return nodes;
         
 	};
 
@@ -733,7 +732,6 @@ module.exports = function (graph) {
 			return undefined;
 		}
 	}
-    console.log("HOLA NEW\n");
-    console.log(parser.nodes);
+
 	return parser;
 };
