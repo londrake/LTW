@@ -847,7 +847,7 @@ module.exports = function (graphContainerSelector) {
  
 //Calling context menu
  $('#'+_clickedNode.id()).contextMenu(menu);
- $('#'+ _clickedNode.id()).contextMenu("open",{top:(Mouse.y),left:(Mouse.x)});
+ $('#'+ _clickedNode.id()).contextMenu("open",{top:(Mouse.y),left:(Mouse.x)});//apertura della finestra e posizionamento della stessa nei pressi del punto di click
         }
 //ADD aggiunta listner click tasto dx sul nodo selezionato del grafo
         nodeElements.on("contextmenu", function(clickedNode){ 

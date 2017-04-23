@@ -6,7 +6,7 @@ module.exports = function () {
         oDom,// istanza di document relativa al popup
         data,
         classArray=[],// array di lavoro usata per l'autocompletamento.
-        editData= {id:"", name:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[], union:[]},
+        editData= {id:"", name:"",iri:"", type:"", comment:"", disjoint:[], subClassOf:[], equivalent:[], superClasses:[], union:[]},
         insert=false,// modalità insert
         delMode=false;//modalità delete
         
@@ -33,55 +33,65 @@ page.initialize=function(g,insertMode){
 // funzione interna per il salvataggio delle modifiche apportate al nodo. Usata in fase di insert/edit.
 save=function(){
      //Reperimento dei dati dal form.
-    //editData è l'oggetto contenente tutti i dati inseriti dall'utente.
-     editData.id= parseInt(oDom.document.getElementById("id").innerHTML.substring(oDom.document.getElementById("id").innerHTML.lastIndexOf(":")+2));
+    //Check che non si inseriscano/editino due nodi con lo stesso nome
      editData.name=oDom.document.getElementById("name").value;
-     editData.type=oDom.document.getElementById("type").value;
-     editData.comment=oDom.document.getElementById("comment").value;
-     var select =oDom.document.getElementById("disjointslc");
-     editData.disjoint=[];
-     for (var i=0; i<select.options.length; i++)
+     var select=oDom.document.getElementById("irislc");
+     editData.iri=select.options[select.selectedIndex].text; 
+    if (!myparser.existNode(editData.name, editData.iri))
         {
-            editData.disjoint.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
-        }
-    
-    select=oDom.document.getElementById("superclassslc");
-    editData.superClasses=[];
-     for (var i=0; i<select.options.length; i++)
-        {
-            editData.superClasses.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
-            
-        }
+            //editData è l'oggetto contenente tutti i dati inseriti dall'utente.
+             editData.id= parseInt(oDom.document.getElementById("id").innerHTML.substring(oDom.document.getElementById("id").innerHTML.lastIndexOf(":")+2));
+             editData.type=oDom.document.getElementById("type").value;
+             editData.comment=oDom.document.getElementById("comment").value;
+             var select =oDom.document.getElementById("disjointslc");
+             editData.disjoint=[];
+             for (var i=0; i<select.options.length; i++)
+                {
+                    editData.disjoint.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+                }
 
-    select=oDom.document.getElementById("subclassesslc");
-    editData.subClassOf=[];
-     for (var i=0; i<select.options.length; i++)
-        {
-            editData.subClassOf.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+            select=oDom.document.getElementById("superclassslc");
+            editData.superClasses=[];
+             for (var i=0; i<select.options.length; i++)
+                {
+                    editData.superClasses.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+
+                }
+
+            select=oDom.document.getElementById("subclassesslc");
+            editData.subClassOf=[];
+             for (var i=0; i<select.options.length; i++)
+                {
+                    editData.subClassOf.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+
+                }
+            select=oDom.document.getElementById("equivalentslc");
+            editData.equivalent=[];
+             for (var i=0; i<select.options.length; i++)
+                {
+                    editData.equivalent.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+
+                }
+            select=oDom.document.getElementById("unionslc");
+            editData.union=[];
+             for (var i=0; i<select.options.length; i++)
+                {
+                    editData.union.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
+
+                }    
+            var mode;
+            if(!insert){
+                mode= myparser.edit(editData,data);
+            }else{
+                mode= myparser.insert(editData);
+            }
+            _app.updateOntologyFromText(mode,undefined,undefined);
+            oDom.close(); 
+        }else{
+            var message=oDom.document.getElementById("message");
+             message.innerHTML="ERROR: Entity already exist - " + editData.iri + "#"+editData.name;
             
         }
-    select=oDom.document.getElementById("equivalentslc");
-    editData.equivalent=[];
-     for (var i=0; i<select.options.length; i++)
-        {
-            editData.equivalent.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
-            
-        }
-    select=oDom.document.getElementById("unionslc");
-    editData.union=[];
-     for (var i=0; i<select.options.length; i++)
-        {
-            editData.union.push(select.options[i].text.substring(select.options[i].text.lastIndexOf(":")+2));           
-            
-        }    
-    var mode;
-    if(!insert){
-        mode= myparser.edit(editData,data);
-    }else{
-        mode= myparser.insert(editData);
-    }
-    _app.updateOntologyFromText(mode,undefined,undefined);
-    oDom.close();   
 }
 //gestione del bottone ADD
 add=function(id){
@@ -125,13 +135,13 @@ add=function(id){
                 }
             input.value="";
         }else if (error==1){
-            message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME FIGLIO UN NODO PADRE.";
+            message.innerHTML="ERROR: Cannot add as child node a parent node.";
 
         }else if (error==2){
-            message.innerHTML="ERRORE: NON PUOI AGGIUNGERE COME PADRE UN NODO FIGLIO.";
+            message.innerHTML="ERRORE: Cannot add as parent node a child node.";
 
         }else if (error==3){
-            message.innerHTML="ERRORE: NON PUOI AGGIUNGERE UN NODO NON ESISTENTE, LO DEVI PRIMA CREARE.";
+            message.innerHTML="ERRORE: Node not present in ontology, create it first.";
 
         }
 }
@@ -217,6 +227,16 @@ page.htmlCreator=function(oDomm, id){
         span.appendChild(input);    
         div.appendChild(span);        
         mainDiv.appendChild(div);
+        //IRI
+        div =oDom.document.createElement("div");
+        span =oDom.document.createElement("span");
+        select= oDom.document.createElement("select");    
+        span.setAttribute("class", "text");
+        span.innerHTML="IRIs:  ";
+        select.setAttribute("id","irislc");
+        span.appendChild(select);
+        div.appendChild(span);
+        mainDiv.appendChild(div);        
         //tipo
         div =oDom.document.createElement("div");
         span =oDom.document.createElement("span");
@@ -409,12 +429,18 @@ page.htmlCreator=function(oDomm, id){
             }
         var body= oDom.document.getElementsByTagName("BODY")[0];
         body.appendChild(datalist);
+        //popolo la select iri
+        select=oDom.document.getElementById("irislc");
+        var iris=myparser.getIris(id);
+        for (var i=0; i< iris.length; i++)
+            select.add( new Option(iris[i]));        
         if (insert){
             //inserimento
             input=oDom.document.getElementById("type");
             input.value="owl:Class";
             select=oDom.document.getElementById("superclassslc");
             select.add( new Option(data.name+" : "+ data.type +" : " + id));
+
 
         }else{
             //modifica

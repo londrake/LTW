@@ -7,7 +7,7 @@ module.exports = function () {
         graph,// istanza di graph        
         maxId=0,//id massimo presente nel file JSON
         parsed;// struttura dati del JSON parsato 
-       
+    
     // imposta il linguaggio attuale selezionato nella pagina di webvowl, in questo modo i dati caricati/inseriti saranno quelli relativi alla lingua selezionata
     myparser.set_language=function(l){        
         language=l;
@@ -60,8 +60,8 @@ module.exports = function () {
         classe.id= _maxId.toString();
         classAttribute.id=classe.id;
         classe.type="owl:Class";// il tipo deve essere uno previsto da webvowl, viene forzato a owl:Class in caso l'utente lo abbia manomesso, Questo tipo è cambiato all'occorrenza in base al tipo di dati presenti nella struttura data
-        classAttribute.iri=parsed.header.iri+"#"+data.name;
-        classAttribute.baseIri=parsed.header.iri;
+        classAttribute.iri=data.iri+"#"+data.name;
+        classAttribute.baseIri=data.iri;
         classAttribute.label[language]=data.name;// setto il nome per il linguaggio corrente
         classAttribute.comment[language]=data.comment;//come sopra ma opero sul commento
     //aggiungo tutti i nodi equivalent
@@ -144,7 +144,7 @@ module.exports = function () {
         else
             parsed.classAttribute[index].label[language] =data.name;   
     //base-IRI
-        parsed.classAttribute[index].iri= parsed.classAttribute[index].baseIri+"#"+data.name;
+        parsed.classAttribute[index].iri= data.iri+"#"+data.name;
     //tipo
         parsed.class[index].type=data.type; 
     //commento
@@ -446,6 +446,41 @@ module.exports = function () {
             }
         return array;        
         
+    }
+     //recupera tutti i baseIri dell'ontologia
+    myparser.getIris=function(id)
+    {
+        var array=[];
+        for (var i=0; i< parsed.header.baseIris.length; i++){        
+                array.push(parsed.header.baseIris[i]);
+            } 
+        var temp=parsed.classAttribute[myparser.findClassIndex(id)].baseIri;
+        array.splice(array.indexOf(temp),1);
+        var swap =array[0];
+        array[0]=temp;
+        array.push(swap);
+    return array;        
+        
+    }
+    //recupera i nomi dei nodi
+    getNodeName= function(index)
+    {
+        //nome
+        var temp= parsed.classAttribute[index].label[language];        
+        
+        if (typeof temp=='undefined')
+            return parsed.classAttribute[index].label["IRI-based"];
+        else
+           return  parsed.classAttribute[index].label[language];
+    }
+    //controlla l'esistenza di un nodo
+    myparser.existNode=function(name, iri){
+        for(var i=0;i<parsed.classAttribute.length; i++){
+            if(parsed.classAttribute[i].baseIri==iri && getNodeName(i)==name)
+            { 
+                return true;
+            }
+        }
     }
     //Restituisce due vettori di lavoro added e deleted che dicono quali sono le modifiche da apportare al selected node
     getDifference= function(editData,baseData, op){
