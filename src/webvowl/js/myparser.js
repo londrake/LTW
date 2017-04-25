@@ -659,7 +659,8 @@ module.exports = function () {
                     parsed.propertyAttribute.splice(index,1);
                 }
             }          
-        }else if (type=="subclassof"){ 
+        }
+        else if (type=="subclassof"){ 
             for(var i=0;i<del.length;i++){            
                 var index= myparser.findPropertyIndex(del[i].id,id,"rdfs:SubClassOf");
                 if (index!=-1){
