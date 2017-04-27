@@ -266,12 +266,15 @@ page.htmlCreator=function(oDomm, id){
         span.setAttribute("class", "text");
         span.innerHTML="Disjoint:  ";
         select.setAttribute("id","disjointslc");
+        select.setAttribute("class","selectBox");
         add_btn.setAttribute("id","disjointadd");
         del_btn.setAttribute("id", "disjointdel");
         add_btn.setAttribute("value","ADD");
         del_btn.setAttribute("value", "DELETE");
         add_btn.setAttribute("type", "button");
         del_btn.setAttribute("type", "button");
+        add_btn.setAttribute("class", "pulsanteADD");
+        del_btn.setAttribute("class", "pulsanteDel");
         add_btn.onclick=function(){add("disjoint")};
         del_btn.onclick=function(){del("disjoint")};
         input =oDom.document.createElement("input");
@@ -296,7 +299,10 @@ page.htmlCreator=function(oDomm, id){
         del_btn.setAttribute("value", "DELETE");
          add_btn.setAttribute("type", "button");
         del_btn.setAttribute("type", "button");
+        add_btn.setAttribute("class", "pulsanteADD");
+        del_btn.setAttribute("class", "pulsanteDel");
         select.setAttribute("id","superclassslc");
+        select.setAttribute("class","selectBox");
         add_btn.setAttribute("id","superclassadd");
         del_btn.setAttribute("id", "superclassdel");
         add_btn.onclick=function(){add("superclass")};
@@ -325,8 +331,11 @@ page.htmlCreator=function(oDomm, id){
          add_btn.setAttribute("type", "button");
         del_btn.setAttribute("type", "button");
         select.setAttribute("id","subclassesslc");
+        select.setAttribute("class","selectBox");
         add_btn.setAttribute("id","subclassesadd");
         del_btn.setAttribute("id", "subclassesdel");
+        add_btn.setAttribute("class", "pulsanteADD");
+        del_btn.setAttribute("class", "pulsanteDel");
         add_btn.onclick=function(){add("subclasses")};
         del_btn.onclick=function(){del("subclasses")};
         span.innerHTML="SubClasses:  ";
@@ -353,7 +362,10 @@ page.htmlCreator=function(oDomm, id){
         del_btn.setAttribute("value", "DELETE");
         add_btn.setAttribute("type", "button");
         del_btn.setAttribute("type", "button");
+        add_btn.setAttribute("class", "pulsanteADD");
+        del_btn.setAttribute("class", "pulsanteDel");
         select.setAttribute("id","equivalentslc");
+        select.setAttribute("class","selectBox");
         add_btn.setAttribute("id","equivalentadd");
         add_btn.onclick=function(){add("equivalent")};
         del_btn.onclick=function(){del("equivalent")};
@@ -381,7 +393,10 @@ page.htmlCreator=function(oDomm, id){
         del_btn.setAttribute("value", "DELETE");
         add_btn.setAttribute("type", "button");
         del_btn.setAttribute("type", "button");
+        add_btn.setAttribute("class", "pulsanteADD");
+        del_btn.setAttribute("class", "pulsanteDel");
         select.setAttribute("id","unionslc");
+        select.setAttribute("class","selectBox");
         add_btn.setAttribute("id","unionadd");
         add_btn.onclick=function(){add("union")};
         del_btn.onclick=function(){del("union")};
@@ -400,10 +415,11 @@ page.htmlCreator=function(oDomm, id){
         //bottone salva
         div =oDom.document.createElement("div");
         span =oDom.document.createElement("span");
-        span.setAttribute("class", "text");
+        span.setAttribute("class", "pulsanteSave");
         var save_btn= oDom.document.createElement("input");
         save_btn.setAttribute("value","SAVE");
         save_btn.setAttribute("type", "button");
+        save_btn.setAttribute("class", "saveButton");
         save_btn.onclick=function(){save()}; 
         span.appendChild(save_btn);
         div.appendChild(span);
@@ -411,7 +427,7 @@ page.htmlCreator=function(oDomm, id){
         //label messaggi informativi
         div =oDom.document.createElement("div");
         span =oDom.document.createElement("span");
-        span.setAttribute("class", "text");
+        span.setAttribute("class", "msg");
         span.setAttribute("id", "message");
         span.innerHTML="";    
         div.appendChild(span);
@@ -502,14 +518,16 @@ page.htmlCreator=function(oDomm, id){
         var div, span, select, confirm_btn;
         div =oDom.document.createElement("div");
         span =oDom.document.createElement("span");
-        span.setAttribute("class", "text");
+        span.setAttribute("class", "delete");
         span.innerHTML="Nodes:  ";
         select= oDom.document.createElement("select");
         confirm_btn= oDom.document.createElement("input");
         confirm_btn.setAttribute("value","Confirm");
         confirm_btn.setAttribute("type", "button");
         select.setAttribute("id","equivalentslc");
+        select.setAttribute("class","deleteslc");
         confirm_btn.setAttribute("id","equivalentconfirm");
+        confirm_btn.setAttribute("class","pulsanteConf");
         confirm_btn.onclick=function(){del_confirm("equivalent")};
         span.appendChild(select);
         span.appendChild(confirm_btn);        

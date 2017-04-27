@@ -1,12 +1,11 @@
 span.text {
-	bottom: 0;
-	color: #bdc3c7;
-	height: 100%;
-	position: relative;
-	right: 0;
-	top:10;
-	width: 22%;
+	color: #bdc3c7;	
 	border-left: 1px solid #34495E;
+    display: grid;
+    grid-template-columns: 14% 10% 10% 5% 7% 10% auto;
+    grid-template-rows: auto;
+    grid-column-gap: 5px;
+    margin-bottom: 5px;    
 }
 
 body {
@@ -22,12 +21,53 @@ body {
 	width: auto;
 }
 
-stile{
+input.stile{
+    justify-items: start;
+    grid-column: 2/5;
 
-	
-	position: relative;
-	margin: 5px, 5px,5px,5px;
+}
+input.pulsanteADD{
+    justify-items: start;
+    grid-column:5;
     
+}
+input.pulsanteDel{
+    justify-items: start;
+    grid-column:6;    
+}
+input.saveButton{
+     width: 80px;
+}
+#nodeslc{
+    grid-column: 2/5;    
+}
+#irislc{
+    grid-column: 2/5;      
+}
+select.selectBox{
+    grid-column:7/10;
+}
+span.msg{
+    margin-top: 5px;
+    grid-column: 1/4;
+    color: #f00;	
+	border-left: 1px solid #34495E;
     
+}
+span.pulsanteSave{
+    margin-bottom: 5px;
+    justify-content: center;
+    
+}
+span.delete{
+    display: grid;
+    color: #bdc3c7;
+    border-left: 1px solid #34495E;
+    grid-template-columns: 14% auto 20%;
+    grid-column-gap: 5px;
+    margin-top: 10px;
+    
+}
+input.pulsanteConf{
     
 }

@@ -808,7 +808,7 @@ module.exports = function (graphContainerSelector) {
         
         //ADD Script menu contestuale tasto destro 
         function myContextMenu(){
-            var stile = "top=center, left=center, width=600, height=220, status=no, menubar=no, toolbar=no scrollbars=no",
+            var stile = "top=center, left=center, width=600, height=275, status=no, menubar=no, toolbar=no scrollbars=no",
                 stileDel="top=center, left=center, width=350, height=70, status=no, menubar=no, toolbar=no scrollbars=no";
            
             var menu = [{
