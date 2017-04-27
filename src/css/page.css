@@ -46,6 +46,7 @@ input.saveButton{
 }
 select.selectBox{
     grid-column:7/10;
+    margin-right: 5px;
 }
 span.msg{
     margin-top: 5px;
@@ -69,5 +70,6 @@ span.delete{
     
 }
 input.pulsanteConf{
+    margin-right: 5px;
     
 }
