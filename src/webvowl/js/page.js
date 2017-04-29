@@ -37,10 +37,10 @@ save=function(){
      editData.name=oDom.document.getElementById("name").value;
      var select=oDom.document.getElementById("irislc");
      editData.iri=select.options[select.selectedIndex].text; 
-    if (!myparser.existNode(editData.name, editData.iri))
+    editData.id= parseInt(oDom.document.getElementById("id").innerHTML.substring(oDom.document.getElementById("id").innerHTML.lastIndexOf(":")+2));
+    if (!myparser.existNode(editData.name, editData.iri,editData.id))
         {
             //editData è l'oggetto contenente tutti i dati inseriti dall'utente.
-             editData.id= parseInt(oDom.document.getElementById("id").innerHTML.substring(oDom.document.getElementById("id").innerHTML.lastIndexOf(":")+2));
              editData.type=oDom.document.getElementById("type").value;
              editData.comment=oDom.document.getElementById("comment").value;
              var select =oDom.document.getElementById("disjointslc");

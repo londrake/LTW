@@ -142,14 +142,16 @@ module.exports = function () {
         if (typeof temp=='undefined')
             parsed.classAttribute[index].label["IRI-based"]=data.name;
         else
-            parsed.classAttribute[index].label[language] =data.name;   
-    //base-IRI
+            parsed.classAttribute[index].label[language] =data.name; 
+    //baseIri
+            parsed.classAttribute[index].baseIri=data.iri;
+    //iri
         parsed.classAttribute[index].iri= data.iri+"#"+data.name;
     //tipo
         parsed.class[index].type=data.type; 
     //commento
         if(parsed.classAttribute[index].comment== undefined)
-                parsed.classAttribute[index].comment=[];
+                parsed.classAttribute[index].comment={};
         parsed.classAttribute[index].comment[language]=data.comment;
         
     //superclasse
@@ -474,13 +476,14 @@ module.exports = function () {
            return  parsed.classAttribute[index].label[language];
     }
     //controlla l'esistenza di un nodo
-    myparser.existNode=function(name, iri){
+    myparser.existNode=function(name, iri,id){
         for(var i=0;i<parsed.classAttribute.length; i++){
-            if(parsed.classAttribute[i].baseIri==iri && getNodeName(i)==name)
+            if(parsed.classAttribute[i].baseIri==iri && getNodeName(i)==name&&parsed.classAttribute[i].id!=id)
             { 
                 return true;
             }
         }
+        return false;
     }
     //Restituisce due vettori di lavoro added e deleted che dicono quali sono le modifiche da apportare al selected node
     getDifference= function(editData,baseData, op){
