@@ -379,39 +379,42 @@ module.exports = function () {
         //ha come priorità massima il typo unionOf poi equivalent (se presenti) infine Class. 
             for(var i=0;i<parsed.classAttribute.length;i++)
                 {
-                    var equivalentBool=true,unionBool=true;
-                    if(parsed.classAttribute[i].equivalent==undefined)
-                        equivalentBool=false;
-                    if(parsed.classAttribute[i].union==undefined)
-                        unionBool=false;
-                    if(equivalentBool==true&&unionBool==true)
+                    if (parsed.class[i].type == "owl:Class" || parsed.class[i].type == "owl:equivalentClass" || parsed.class[i].type =="owl:unionOf")
+                        {
+                        var equivalentBool=true,unionBool=true;
+                        if(parsed.classAttribute[i].equivalent==undefined)
+                            equivalentBool=false;
+                        if(parsed.classAttribute[i].union==undefined)
+                            unionBool=false;
+                        if(equivalentBool==true&&unionBool==true)
+                            {
+                                if(parsed.classAttribute[i].union.length>0)
+                                    parsed.class[i].type="owl:unionOf";
+                                else if(parsed.classAttribute[i].equivalent>0)
+                                    parsed.class[i].type="owl:equivalentClass";
+                                else
+                                    parsed.class[i].type="owl:Class";
+                            }
+                        else if(equivalentBool==false&&unionBool==true)
                         {
                             if(parsed.classAttribute[i].union.length>0)
-                                parsed.class[i].type="owl:unionOf";
-                            else if(parsed.classAttribute[i].equivalent>0)
-                                parsed.class[i].type="owl:equivalentClass";
-                            else
-                                parsed.class[i].type="owl:Class";
+                                    parsed.class[i].type="owl:unionOf";
+                                else
+                                    parsed.class[i].type="owl:Class";
                         }
-                    else if(equivalentBool==false&&unionBool==true)
-                    {
-                        if(parsed.classAttribute[i].union.length>0)
-                                parsed.class[i].type="owl:unionOf";
-                            else
-                                parsed.class[i].type="owl:Class";
-                    }
-                    else if(equivalentBool==true&&unionBool==false)
-                        {
-                            if(parsed.classAttribute[i].equivalent.length>0)
-                                parsed.class[i].type="owl:equivalentClass";
-                            else
-                                parsed.class[i].type="owl:Class";
+                        else if(equivalentBool==true&&unionBool==false)
+                            {
+                                if(parsed.classAttribute[i].equivalent.length>0)
+                                    parsed.class[i].type="owl:equivalentClass";
+                                else
+                                    parsed.class[i].type="owl:Class";
+                            }
+                        else
+                        { 
+                            parsed.class[i].type="owl:Class";
                         }
-                    else
-                    { 
-                        parsed.class[i].type="owl:Class";
-                    }
-                  }
+                      }
+                }
     }
     //funzione che ritorna tutti i nodi in un array usato nell'autocompletamento in fase di inserimento/editing.
     //accetta l'id del nodo e un booleano come parametri.
