@@ -139,63 +139,10 @@ module.exports = function () {
 		exportMenu.setFilename(filename);
 	}
     
-    //ADD COPIA RICHIAMABILE IN PAGE.JS DELLA FUNZIONE LOAD ONTOLOGY
+    //ADD METODO RICHIAMABILE IN PAGE.JS DELLA FUNZIONE LOAD ONTOLOGY
     app.updateOntologyFromText=function(jsonText, filename, alternativeFilename) {
-		pauseMenu.reset();
-
-		if (jsonText===undefined && filename===undefined){
-			console.log("Nothing to load");
-			return;
-		}
-
-		var data;
-		if (jsonText) {
-			// validate JSON FILE
-			var validJSON;
-			try {
-				data =JSON.parse(jsonText);
-                validJSON=true;
-			} catch (e){
-				validJSON=false;
-			}
-			if (validJSON===false){
-				// the server output is not a valid json file
-				console.log("Retrieved data is not valid! (JSON.parse Error)");
-				ontologyMenu.emptyGraphError();
-				return;
-			}
-
-			if (!filename) {
-				// First look if an ontology title exists, otherwise take the alternative filename
-				var ontologyNames = data.header ? data.header.title : undefined;
-				var ontologyName = languageTools.textInLanguage(ontologyNames);
-
-				if (ontologyName) {
-					filename = ontologyName;
-				} else {
-					filename = alternativeFilename;
-				}
-			}
-		}
-
-		//@WORKAROUND
-		// check if data has classes and properties;
-		var classCount				  = parseInt(data.metrics.classCount);
-		var objectPropertyCount		  = parseInt(data.metrics.objectPropertyCount);
-		var datatypePropertyCount	  = parseInt(data.metrics.datatypePropertyCount);
-
-		if (classCount === 0 && objectPropertyCount===0 && datatypePropertyCount===0 ){
-			// generate message for the user;
-			ontologyMenu.emptyGraphError();
-		}
-
-		exportMenu.setJsonText(jsonText);
-		options.data(data);
-		graph.load();
-		
-		sidebar.updateOntologyInformation(data, statistics);
-		exportMenu.setFilename(filename);
-	}
+	loadOntologyFromText(jsonText, filename, alternativeFilename);	
+    }
 
 	function adjustSize() {
 		var graphContainer = d3.select(GRAPH_SELECTOR),
